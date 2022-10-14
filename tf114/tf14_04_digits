@@ -1,0 +1,68 @@
+
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import tensorflow as tf
+from sklearn.preprocessing import OneHotEncoder
+#1. 데이터
+datasets = load_digits()
+x_data = datasets.data
+y_data = datasets.target.reshape(-1,1)
+print(np.unique(datasets.target))
+ohe = OneHotEncoder()
+y_data = ohe.fit_transform(y_data).toarray()
+x_train, x_test, y_train, y_test = train_test_split(x_data,y_data,train_size=0.8,random_state=234)
+print(x_data.shape, y_data.shape)
+x = tf.placeholder(tf.float32,shape=[None,64])
+w = tf.Variable(tf.random_normal([64,10]),tf.float32)
+b = tf.Variable(tf.random_normal([1,10]),tf.float32)
+y = tf.placeholder(tf.float32,shape=[None,10])
+hypothesis = tf.nn.softmax(tf.matmul(x,w)+b)
+loss = tf.reduce_mean(-tf.reduce_mean(y*tf.log(hypothesis),axis=1))
+train = tf.train.GradientDescentOptimizer(learning_rate=0.0001).minimize(loss)
+with tf.compat.v1.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    for i in range(201):
+        h_val = sess.run(hypothesis, feed_dict={x:x_train,y:y_train})
+        if i % 20==0:
+            print(h_val)
+    pred = sess.run(hypothesis,feed_dict={x:x_test})
+    print(pred)
+    print(pred.shape)
+    print(y_test.shape)
+    y_test = np.argmax(y_test,axis=1)
+    pred = np.argmax(pred,axis=1)
+    print(accuracy_score(y_test,pred))
+
+# votind
+# LogisticRegression 정확도: 0.9528
+# KNeighborsClassifier 정확도: 0.9500
+# XGBClassifier 정확도: 0.9611
+# LGBMClassifier 정확도: 0.9639
+# CatBoostClassifier 정확도: 0.9667
+
+
+# x(1797, 64)
+# y[0 1 2 3 4 5 6 7 8 9]
+
+# lda 10
+# 시간 1.3313465118408203
+# 결과 0.9472222222222222
+
+# pca 60
+# 시간 1.965287446975708
+# 결과 0.9444444444444444
+
+# no pca lda
+# 시간 1.5885100364685059
+# 결과 0.9555555555555556
+
+# xgb
+# 시간 2.213334560394287
+# 결과 0.9555555555555556
+
+# xgb bagging100
+# 시간 90.1886818408966
+# 결과 0.9611111111111111

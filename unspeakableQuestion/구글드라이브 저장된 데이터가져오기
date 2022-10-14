@@ -1,0 +1,6 @@
+!pip install gdrive_dataset
+from gdrivedataset import loader
+file_id = '15qA4X0jTAhYUyiW-rq81rQGXWCC7_CSB'
+loader.load_from_google_drive(file_id)
+
+!unzip -qq '/content/dataset.zip' # 압축파일 경로

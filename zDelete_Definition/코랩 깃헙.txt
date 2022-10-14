@@ -1,0 +1,43 @@
+from os.path import join  
+
+# path to your project on Google Drive
+MY_GOOGLE_DRIVE_PATH = '/content/drive/MyDrive/Colab Data/' 
+# replace with your Github username 
+GIT_USERNAME = "letcodesing" 
+# definitely replace with your
+GIT_TOKEN = "[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]"  
+# Replace with your github repository in this case we want 
+# to clone deep-learning-v2-pytorch repository
+GIT_REPOSITORY = "study" 
+
+PROJECT_PATH = join(MY_GOOGLE_DRIVE_PATH)
+
+# It's good to print out the value if you are not sure 
+print("PROJECT_PATH: ", PROJECT_PATH)   
+
+# In case we haven't created the folder already; we will create a folder in the project path 
+!mkdir "{PROJECT_PATH}"    
+
+#GIT_PATH = "https://{GIT_TOKEN}@github.com/{GIT_USERNAME}/{GIT_REPOSITORY}.git" this return 400 Bad Request for me
+GIT_PATH = "https://" + GIT_TOKEN + "@github.com/" + GIT_USERNAME + "/" + GIT_REPOSITORY + ".git"
+print("GIT_PATH: ", GIT_PATH)
+
+////변경사항 - 프로젝트패스 -조인에서  root삭제 유저네임, 드라이브패스, 레파지토리 수정
+먼저 구글 드라이브 마운트한 상태
+
+실행후
+///
+%cd "{PROJECT_PATH}"    # Change directory to the location defined in project_path
+!git clone "{GIT_PATH}"  # clone the github repository
+
+프로젝트 패스뒤 .붙이는 거에 따라 폴더를 새로 만들거나 안만들거나 함
+
+
+///
+
+https://colab.research.google.com/github/
+
+//
+원드라이브 마운트
+깃허브 연동 혹은 개별 파일 불러와서 실행하기
+

@@ -1,0 +1,73 @@
+#1. 데이터
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split,cross_val_score,KFold,cross_val_predict,GridSearchCV,RandomizedSearchCV
+from sklearn.metrics import r2_score, mean_squared_error
+import warnings
+import matplotlib.pyplot as plt
+from sklearn.metrics import r2_score
+from bayes_opt import BayesianOptimization
+from sklearn.model_selection import GridSearchCV,KFold,StratifiedKFold,train_test_split
+
+from xgboost import XGBRegressor
+warnings.filterwarnings('ignore')
+pd.__version__
+path184 = 'C:/Users/aiapalm/OneDrive - KNOU/beat/study/_data/kaggle_bike/'
+path = 'C:/Users/aia200/OneDrive - 한국방송통신대학교/beat/study/_data/ddareunge/'
+train_set = pd.read_csv(path184 + 'train.csv', index_col=0)
+test_set = pd.read_csv(path184 + 'test.csv', index_col=0)
+
+
+train_set = train_set.fillna(0) # 결측치 0으로 채움
+
+x_data = train_set.drop(['count'], axis=1)
+y_data = train_set['count'].values.reshape(-1,1)
+x_train, x_test, y_train, y_test = train_test_split(x_data,y_data,train_size=0.8,random_state=234)
+# print(x.shape, y.shape,type(y))
+import tensorflow as tf
+x = tf.placeholder(tf.float32,shape=[None,10])
+w = tf.Variable(tf.random_normal([10,1]))
+b = tf.Variable(tf.random_normal([1,1]))
+y = tf.placeholder(tf.float32,shape=[None,1])
+
+hypothesis = tf.matmul(x,w)+b
+loss = tf.reduce_mean(tf.square(hypothesis-y))
+train = tf.train.GradientDescentOptimizer(learning_rate=0.0001).minimize(loss)
+
+with tf.compat.v1.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    for i in range(201):
+        h_val = sess.run(hypothesis, feed_dict = {x:x_train, y:y_train})
+        if i % 20 == 0:
+            print(i, h_val)
+    pred = sess.run(hypothesis, feed_dict = {x:x_test})
+    print(pred)
+    print(r2_score(y_test,pred))
+# xgb
+# 0.2199995517730713
+# 0.8278279081370832
+
+# xgb bagging
+# 15.233698606491089
+# 0.8005528500648607
+
+# voting
+# LinearRegression 정확도: 0.6018
+# KNeighborsRegressor 정확도: 0.6648
+# XGBRegressor 정확도: 0.7900
+# LGBMRegressor 정확도: 0.7752
+# CatBoostRegressor 정확도: 0.7924
+
+# pilinominal croos val score
+# 0.7773719650870032
+
+# log 처리후
+# LinearRegression 정확도: 0.5782
+# KNeighborsRegressor 정확도: 0.6512
+# XGBRegressor 정확도: 0.7239
+# LGBMRegressor 정확도: 0.7648
+# CatBoostRegressor 정확도: 0.7768
+# 0.78103896786403
+
+# xgb bo
+# 'target': 0.9996210280130529

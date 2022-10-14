@@ -1,0 +1,49 @@
+비트컴
+154 의 결과:  0.9654
+시간:  9.77832841873169
+[19:56:35] WARNING: C:/Users/Administrator/workspace/xgboost-win64_release_1.6.0/src/learner.cc:256: Only 1 GPUs are visible, setting `gpu_id` to 0
+331 의 결과:  0.9631
+시간:  14.42968225479126
+[19:56:56] WARNING: C:/Users/Administrator/workspace/xgboost-win64_release_1.6.0/src/learner.cc:256: Only 1 GPUs are visible, setting `gpu_id` to 0
+486 의 결과:  0.9616
+시간:  19.38978362083435
+[19:57:19] WARNING: C:/Users/Administrator/workspace/xgboost-win64_release_1.6.0/src/learner.cc:256: Only 1 GPUs are visible, setting `gpu_id` to 0
+713 의 결과:  0.9633
+시간:  25.137731075286865
+
+paperspace
+154 의 결과:  0.9641
+시간:  8.38408374786377
+[11:19:03] WARNING: ../src/learner.cc:256: Only 1 GPUs are visible, setting `gpu_id` to 0
+331 의 결과:  0.9638
+시간:  12.606086254119873
+[11:19:29] WARNING: ../src/learner.cc:256: Only 1 GPUs are visible, setting `gpu_id` to 0
+486 의 결과:  0.9625
+시간:  16.804399490356445
+[11:19:52] WARNING: ../src/learner.cc:256: Only 1 GPUs are visible, setting `gpu_id` to 0
+713 의 결과:  0.9618
+시간:  23.1670241355896
+
+3090 gpu1
+154 의 결과:  0.9648    
+시간:  8.110002756118774
+[20:33:40] WARNING: C:/Users/Administrator/workspace/xgboost-win64_release_1.6.0/src/learner.cc:256: Only 1 GPUs are visible, setting `gpu_id` to 0
+331 의 결과:  0.9633
+시간:  10.902302742004395
+[20:33:55] WARNING: C:/Users/Administrator/workspace/xgboost-win64_release_1.6.0/src/learner.cc:256: Only 1 GPUs are visible, setting `gpu_id` to 0
+486 의 결과:  0.9614
+시간:  13.125211000442505
+[20:34:11] WARNING: C:/Users/Administrator/workspace/xgboost-win64_release_1.6.0/src/learner.cc:256: Only 1 GPUs are visible, setting `gpu_id` to 0
+713 의 결과:  0.9641
+시간:  16.204235076904297
+
+3090 gpu0
+[154, 331, 486, 713]
+154 의 결과:  0.9651
+시간:  8.140839338302612
+331 의 결과:  0.9647
+시간:  10.800883769989014
+486 의 결과:  0.9616
+시간:  13.307225942611694
+713 의 결과:  0.9641
+시간:  16.285640001296997

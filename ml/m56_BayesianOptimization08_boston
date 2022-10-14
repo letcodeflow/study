@@ -1,0 +1,81 @@
+from inspect import Parameter
+from sklearn.datasets import load_boston
+from sklearn.model_selection import GridSearchCV,KFold,StratifiedKFold,train_test_split
+from sklearn.preprocessing import MinMaxScaler,StandardScaler
+from xgboost import XGBClassifier,XGBRegressor
+import time
+import numpy as np
+from sklearn.feature_selection import SelectFromModel
+from sklearn.metrics import r2_score
+from bayes_opt import BayesianOptimization
+from xgboost import XGBRegressor
+#1.data
+datasets = load_boston()
+x = datasets.data
+y = datasets.target
+print(x.shape, y.shape)
+x_train, x_test, y_train, y_test = train_test_split(x,y,train_size=0.8,random_state=234)
+Parameters = {
+    'n_estimators':[100],
+    'learning_rate':[0.1],
+    'max_depth':[None],
+    'gamma': [0],  
+    'min_child_weight':[5], 
+    'subsample':[1], #디폴트1 0~1
+    'colsample_bytree':[0.1], 
+    'colsample_bylevel':[1], 
+    'colsample_bynode':[1], 
+    'reg_alpha':[0], # l1 정규화 절대값으로 exploding 방지 0~inf/ alpha라고해도됨 디폴트0
+    # 'reg_lambda':[0,0.1,0.001,0.00000001,100,10000,100000] # l2 정규화 제곱으로 exploding 방지 0~inf 디폴트1 lambda
+}
+bayesian_params = {
+    'max_depth':(6,16),
+    'num_leaves':(24,64),
+    'min_child_samples':(10,200),
+    'min_child_weight':(1,50),
+    'subsample':(0.5,1),
+    'colsample_bytree':(0.5,1),
+    'max_bin':(10,500),
+    'reg_lambda':(0.001,10),
+    'reg_alpha':(0.01,50)
+}
+def lgb_hamsu(max_depth, num_leaves, min_child_samples, min_child_weight,subsample,colsample_bytree,max_bin,reg_lambda, reg_alpha):
+    params = {
+        'n_estimator':500, 'learning_rate':0.02,
+        'max_depth': int(round(max_depth)), #위에서 받아온 값의 무조건 정수형
+        'num_leaves':int(round(num_leaves)),
+        'min_child_samples':int(round(min_child_samples)),
+        'min_child_weight':int(round(min_child_weight)),
+        'subsample':max(min(subsample,1),0), #어떤 값이든 0~1사이
+        'colsample_bytree':max(min(colsample_bytree,1),0),
+        'max_bin':max(int(round(max_bin)),10), #10이상만
+        'reg_lambda':max(reg_lambda,0), #양수만
+        'reg_alpha':max(reg_alpha,0)
+    }
+    model = XGBRegressor(**params) #**딕셔너리 형태로 받겠다 * 여러개의 인자를 받겠다
+    lg = XGBRegressor()
+
+    lg.fit(x_train,y_train, eval_set = [(x_train,y_train),(x_test,y_test)],
+        # eval_metric = 'mlogloss',
+        verbose=0,
+        early_stopping_rounds=50)
+    pred = lg.predict(x_test)
+    result = r2_score(y_test,pred)
+    return result
+lgb_bo = BayesianOptimization(f=lgb_hamsu,
+                              pbounds=bayesian_params,
+                              random_state=29837)
+lgb_bo.maximize(init_points=5,n_iter=50)
+print(lgb_bo.max)
+
+# xgb
+# time 0.06499075889587402
+# score -3.978463050927994
+
+# xgb bagging
+# time 86.17413973808289
+# score 0.8960392970522392
+# 0.8960392970522392
+
+# polynomial
+# 0.8559369643998214

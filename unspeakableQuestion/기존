@@ -1,0 +1,12 @@
+#모델을 하나씩 import 하는 것은 성능때문인가?
+#왜 batch_size를 줄이는 것이 loss율을 낮추는가?
+데이터가 작을땐 이론적으로 성능이 더 낫지만 데이터가 커지면 큰 차이 없다
+#optimizer가 loss에 좀 더 힘을 준다는 것은 어떤 뜻인가?
+#shape (2,2,3)에서 열은 3 하나인가? (3, )
+#성능저하에서 맨처음 아웃풋 즉 (Dense(@, input=))에서 아웃풋이 클수록 또 번갈아가며 노드의 숫자가 들쭉날쭉할수록
+# 저하가 커지는 것 같다. 참고
+# https://github.com/jiwondd/study/blob/1a0b4d96938eeda3ca48823413a670f6ad82840f/keras07_R2_2_bad.py
+# https://github.com/Leejoonkwon/Study/blob/daa59c5c0fccc109d9bda977002e43920f3a6eb8/keras/keras07_R2_2_bad.py
+
+ 결정계수 매개변수
+ 

@@ -1,0 +1,69 @@
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_boston, load_breast_cancer,fetch_covtype,load_wine,load_iris,load_digits
+from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from bayes_opt import BayesianOptimization
+from xgboost import XGBClassifier
+#1. 데이터
+datasets = fetch_covtype()
+x_data = datasets.data
+y = datasets.target.reshape(-1,1)
+print(x_data.shape,y.shape)
+print(np.unique(y))
+from sklearn.preprocessing import OneHotEncoder
+ohe = OneHotEncoder()
+y_data = ohe.fit_transform(y).toarray()
+print(x_data.shape,y_data.shape)
+
+
+x_train, x_test, y_train, y_test = train_test_split(x_data,y_data,train_size=0.8,random_state=234)
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+x = tf.placeholder(tf.float32,shape=[None,54])
+w = tf.Variable(tf.random_normal([54,7]))
+b = tf.Variable(tf.random_normal([1,7]))
+y = tf.placeholder(tf.float32,shape=[None,7])
+
+hypothesis = tf.nn.softmax(tf.matmul(x,w)+b)
+loss = tf.reduce_mean(-tf.reduce_mean(y*tf.log(hypothesis),axis=1))
+train = tf.train.GradientDescentOptimizer(learning_rate=0.0001).minimize(loss)
+
+with tf.compat.v1.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    for i in  range(201):
+        h_val = sess.run(hypothesis,feed_dict={x:x_train,y:y_train})
+        if i % 20 ==0:
+            print(i,h_val)
+    pred = sess.run(hypothesis,feed_dict={x:x_test})
+    print(pred.shape, y_test.shape)
+    pred = np.argmax(pred,axis=1)
+    y_test = np.argmax(y_test,axis=1)
+    print(accuracy_score(y_test,pred))
+    
+    
+
+# lda 6
+# y[0 1 2 3 4 5 6]
+# 시간 3.795407295227051
+# 결과 0.7874581551250829
+
+# pca 50
+# 시간 7.356786489486694
+# 결과 0.8941249365334802
+
+# no pca lda
+# 시간 6.201480150222778
+# 결과 0.8683166527542319
+
+# voting
+# LogisticRegression 정확도: 0.7226
+# KNeighborsClassifier 정확도: 0.9208
+# XGBClassifier 정확도: 0.7424
+# LGBMClassifier 정확도: 0.8312
+# CatBoostClassifier 정확도: 0.8863
+
+# xgb bo
+# target': 0.871191630668745

@@ -1,0 +1,28 @@
+Dynamic optimization
+Bellman equation
+Hamiltonian
+Markov process
+Game theory
+Markov Chain Monte Carlo (MCMC)
+
+ OLS 배우고 난 다음에 기초 가정 (Gauss-Markov) 붕괴되는 상황들 
+
+Estimation theory
+
+ ML 가장 기초 교재로 알려진 ISLR의 S는 ‘Statistical’
+
+GLS로 확장되는 기초 회귀분석
+
+ GLS와 IVE 둘을 놓고 Hausman test를 하면서 둘 중 어느 쪽 Regime이 더 맞는지를 테스트할 수 있는 역량
+
+GLS와 IVE가 각각 어떤 현실에 대한 가정을 담고 있는지를 연결해서, 세상을 압축적으로 요약한 테스트라는걸 이해할 수 있는 역량이 쌓이기 전까지는.
+
+각각이 담고 있는 Factor Analysis 가정 중 어느 쪽이 더 데이터의 Hidden structure를 잘 잡아내고 있다는 걸 “통계 검정” 할 수 있을 것이다.
+
+https://apply.pabii.com/course/math-stat-msc_ds/
+
+해석개론 A 
+
+ 통계학개론, 계량경제학, 미적분학, 선형대수학, 회귀분석
+
+

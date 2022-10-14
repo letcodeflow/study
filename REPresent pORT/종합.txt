@@ -1,0 +1,143 @@
+예제2시간 프로젝트 120시간
+시간투자에 대한 가치
+
+뭔가 다른것
+
+별점은 classifier보다 회귀
+
+객관적인 평가란?
+
+감정 = y?
+
+데이터 수작업? 크롤링? y값에 해당하는 라벨링은 어떻게 할 것인가? 어떻게 신뢰할 것인가?
+그렇게 해서 생성된 데이터에 대한 설명
+
+x가 y보다 피처수가 적으면 x라고 할 수 있을까
+
+해당하는 데이터는 어떤 형태며 어떻게 수집할 것인가
+
+결과를 테스트하는 방법
+
+flask나 장고로 웹
+
+결국 어떤 인풋으로 어떤 아웃풋을 내놓을 것이냐
+
+알고리즘과 딥러닝의 차이
+
+추천하는 가중치를 어떤 근거로 내놓을 것인가?
+
+y고유값을 나누는 근거, 이유, 데이터
+
+두 모델이 연관이 있되 같은 근거, 같은 판단을 내린다면 사실상 같은 데이터일 수 있다
+
+adam과 rmsprop 차이
+현재 기울기에 좋더 비중
+
+vgg16
+
+bidirectional
+
+swich 좀더 완만한 경사 relu에서 파생된 것들은 보통 0이하의 소멸값을 살리기 위해 노력한다
+음수값이 없으면 학습이 계속될수록 기울기가 소실되기 때문
+
+히든 부분은 정확히 잡을 수 없다
+모델비교해야한다
+
+pt시 우기거나 용서를 빌거나
+
+타임테이블에 날짜명시
+
+너무 기초적인 것은 명시할 필요 없다
+
+acc 스코어를 높일방안
+
+sigmoid와 tanh이 들어간 이유
+
+pt명시 - 물어보게된다 = 내가 설명할 수 있다
+
+pt를 하는 자신감, 근거
+
+Resnet
+
+kernel initialize xivier 정규분포방시으로 초기값 설정
+
+attention hidden weight 기억해서 처리
+
+positional encoding 계산된 가중치를 넣어준다
+병렬화 - self-attention
+
+batch_input shape <->statreful
+
+kernel <-> bias initial
+
+zero padding
+
+return meth ceil
+
+Flatening
+
+relu-tanh 비교
+
+nlp의 핵심 데이터가 적고 정제됨
+
+느낀점 필요없음
+
+Residual Blac - plain network .Conv만 쌓이면 오버피팅 
+
+yolo
+
+마지막 계층 M = Bx(c+5) ->w*h*M 행렬
+
+anchor box 가로세로 위치정보
+
+class probability map
+
+darknet
+
+업샘플링과 오버샘플링
+
+from conv - batch nomal -렐루와 관계
+
+결과값에 맞는 데이터인가?
+
+특정날짜 예상이 어렵다면 총매출
+
+strides
+batch normalization
+
+acc값과 인간이 인식할 수 있는 값의 일치성
+
+컬러가 아니라면 명암에 치우친다
+
+trainable
+
+1*1 - 5*5 가 그냥 5*5보다 채널수 조절 용이, 계산량 감소
+
+Gan Dual style
+
+detection 1stage yolo
+2stage RestRNN
+
+NLP transformer 계열 GPT GPT2..
+
+local optimum은 극복되기도 안되기도 한다 해봐야 앎
+
+batch를 relu 이전에 쓰는 이유
+
+로스값이 2개 이상인데 단순 더하면 각 로스값에 대한 판단을 어떻게 할 것인가?
+
+Conv2dTranspose 인코더 디코더
+
+Logistic
+test tester master satge1
+vision transformer
+
+beyesian optimizaation
+
+quantiletransformer
+powertransformer
+polynomialfeatyre
+votinclassier 배깅 스태킹
+cluster kmean
+knn
+

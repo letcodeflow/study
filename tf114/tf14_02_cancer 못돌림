@@ -1,0 +1,68 @@
+import tensorflow as tf
+config = tf.compat.v1.ConfigProto()
+
+
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import GridSearchCV,KFold,StratifiedKFold,train_test_split
+from sklearn.preprocessing import MinMaxScaler,StandardScaler
+from xgboost import XGBClassifier,XGBRegressor
+import time
+import numpy as np
+from sklearn.metrics import accuracy_score
+from bayes_opt import BayesianOptimization
+import tensorflow as tf
+#1.data
+datasets = load_breast_cancer()
+x = datasets.data
+y = datasets.target
+# print(datasets)
+# print(x.shape, y.shape)
+# print(dir(datasets.target))
+# print(type(y))
+y = y.reshape(-1,1)
+x_train, x_test, y_train, y_test = train_test_split(x,y,train_size=0.8,random_state=234)
+
+
+# print(x_train.shape)
+x = tf.compat.v1.placeholder(tf.float32,shape=[None,30])
+w = tf.compat.v1.Variable(tf.zeros([30, 1]),dtype=tf.float32)
+b = tf.compat.v1.Variable(tf.zeros([1]),dtype=tf.float32)
+y = tf.compat.v1.placeholder(tf.float32,shape=[None,1])
+
+hypothesis = tf.compat.v1.sigmoid(tf.matmul(x,w)+b)
+
+loss = tf.reduce_mean(y*tf.log(hypothesis)+(1-y)*tf.log(1-hypothesis))
+opti = tf.train.GradientDescentOptimizer(learning_rate=0.00000000001).minimize(loss)
+
+sess = tf.compat.v1.InteractiveSession()
+sess.run(tf.global_variables_initializer())
+
+for epoch in range(101):
+    hy_val,loss_val,_ = sess.run([hypothesis,loss,opti],feed_dict={x:x_train,y:y_train})
+    if epoch % 10 == 0:
+        print(epoch, loss_val)
+
+    pred = sess.run(tf.cast(hy_val>=0.5,dtype=tf.float32))
+    from sklearn.metrics import accuracy_score
+    acc = accuracy_score(y_train, pred)  
+    print(acc)  
+
+
+
+
+# print(accuracy_score(y_test,sess.run(hypothesis,feed_dict={x:x_test, y:y_test})))
+# xgb
+# time 0.09999942779541016
+# 0.9473684210526315  
+
+# baggin xgb
+# time 9.444420099258423
+# 0.9298245614035088
+
+# polinominal
+# 0.8497420020639836
+# time 21.070155382156372
+# 0.9649122807017544
+
+# eval_metric 제거 xgb
+# 'target': 0.9649122807017544

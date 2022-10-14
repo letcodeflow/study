@@ -1,0 +1,6 @@
+flatten 한다음에 np where?
+식 자체 로 01
+y_predict[(y_predict<0.5)] = 0
+y_predict[(y_predict>=0.5)] = 1
+round(0)
+relu def

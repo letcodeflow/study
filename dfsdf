@@ -1,0 +1,38 @@
+[33m87fec6b[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m HEAD@{0}: reset: moving to HEAD^
+[33mdad18be[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: reset: moving to HEAD
+[33mdad18be[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{2}: reset: moving to HEAD
+[33mdad18be[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{3}: reset: moving to HEAD
+[33mdad18be[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{4}: commit: gogo
+[33m87fec6b[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m HEAD@{5}: commit: gogo
+[33md5c6084[m HEAD@{6}: Branch: renamed refs/heads/main to refs/heads/main
+[33md5c6084[m HEAD@{8}: commit: lrkajrf
+[33mcd33241[m HEAD@{9}: commit: dkjfs
+[33mbdbd894[m HEAD@{10}: commit: ugyg
+[33md6e3db2[m HEAD@{11}: commit: unit
+[33mfaae8ab[m HEAD@{12}: commit: juga
+[33m10dfac7[m HEAD@{13}: commit: git
+[33mb51a284[m HEAD@{14}: commit: jena
+[33m5dbfe16[m HEAD@{15}: commit: Update keras45_lstm_kaggle_jena2.py
+[33md9e70c3[m HEAD@{16}: commit: lstm splic
+[33mb93a296[m HEAD@{17}: commit: up
+[33m6fd904c[m HEAD@{18}: commit: up
+[33m4916bcf[m HEAD@{19}: pull --ff --progress origin: Merge made by the 'ort' strategy.
+[33mcd7dd02[m HEAD@{20}: commit: split
+[33m01bc9bd[m HEAD@{21}: commit: sdlkfj
+[33m4ccfff3[m HEAD@{22}: commit: adf
+[33m0f2bf35[m HEAD@{23}: commit: dd
+[33m45de42e[m HEAD@{24}: pull --ff --progress origin: Fast-forward
+[33m85b9c6c[m HEAD@{25}: commit: r2g
+[33m80cc856[m HEAD@{26}: commit: 햣
+[33m074810b[m HEAD@{27}: pull --ff --progress origin: Fast-forward
+[33m7ebdcd0[m HEAD@{28}: pull --ff --progress origin: Fast-forward
+[33mba2def9[m HEAD@{29}: commit: 챪ㄱ100
+[33m4181fa3[m HEAD@{30}: commit: 토요일밤에
+[33md6da370[m HEAD@{31}: commit: argmax
+[33mc451cbc[m HEAD@{32}: commit: before move
+[33m24e02ab[m HEAD@{33}: commit: mcp
+[33m9b9b0ad[m HEAD@{34}: commit: beforeti
+[33mc73328d[m HEAD@{35}: commit: kjdfhak
+[33m3d5722b[m HEAD@{36}: commit: to
+[33md4d0595[m HEAD@{37}: commit: 내일 타이타닉
+[33mc2e156b[m HEAD@{38}: clone: from https://github.com/letcodesing/study.git

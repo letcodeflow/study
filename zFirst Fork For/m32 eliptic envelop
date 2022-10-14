@@ -1,0 +1,735 @@
+combine = [train_set,test_set]
+
+for dataset in combine:
+    dataset['Title'] = dataset.Name.str.extract(' ([A-Za-z]+)\.', expand=False)
+    
+pd.crosstab(train_set['Title'], train_set['Sex'])
+
+title_mapping = {"Mr": 1, "Miss": 2, "Mrs": 3, "Master": 4, "Rare": 5}   
+for dataset in combine:
+    dataset['Title'] = dataset['Title'].map(title_mapping)
+    dataset['Title'] = dataset['Title'].fillna(0)
+    
+for dataset in combine:
+    dataset['Sex'] = dataset['Sex'].map( {'female': 1, 'male': 0} ).astype(int)
+    
+train_set['AgeBand'] = pd.cut(train_set['Age'], 5)
+for dataset in combine:    
+    dataset.loc[ dataset['Age'] <= 16, 'Age'] = 0
+    dataset.loc[(dataset['Age'] > 16) & (dataset['Age'] <= 32), 'Age'] = 1
+    dataset.loc[(dataset['Age'] > 32) & (dataset['Age'] <= 48), 'Age'] = 2
+    dataset.loc[(dataset['Age'] > 48) & (dataset['Age'] <= 64), 'Age'] = 3
+    dataset.loc[ dataset['Age'] > 64, 'Age'] = 4
+    
+    
+for dataset in combine:
+    dataset['FamilySize'] = dataset['SibSp'] + dataset['Parch'] + 1
+    
+test_set['Fare'].fillna(test_set['Fare'].dropna().median(), inplace=True)
+
+
+for dataset in combine:
+    dataset['Embarked'] = dataset['Embarked'].map( {'S': 0, 'C': 1, 'Q': 2} ).astype(int)
+    
+model = XGBClassifier(tree_method='gpu_hist')
+///준권
+
+
+
+
+train_test_data = [train_set, test_set]
+sex_mapping = {"male":0, "female":1}
+for dataset in train_test_data:
+    dataset['Sex'] = dataset['Sex'].map(sex_mapping)
+    
+for dataset in train_test_data:
+    dataset['Title'] = dataset['Name'].str.extract('([\w]+)\.', expand=False)
+for dataset in train_test_data:
+    dataset['Title'] = dataset['Title'].apply(lambda x: 0 if x=="Mr" else 1 if x=="Miss" else 2 if x=="Mrs" else 3 if x=="Master" else 4)
+    
+train_set['Cabin'] = train_set['Cabin'].str[:1]
+for dataset in train_test_data:
+    dataset['Age'].fillna(dataset.groupby("Title")["Age"].transform("median"), inplace=True)
+for dataset in train_test_data:
+    dataset['Agebin'] = pd.cut(dataset['Age'], 5, labels=[0,1,2,3,4])
+for dataset in train_test_data:
+    dataset["Fare"].fillna(dataset.groupby("Pclass")["Fare"].transform("median"), inplace=True)
+for dataset in train_test_data:
+    dataset['Farebin'] = pd.qcut(dataset['Fare'], 4, labels=[0,1,2,3])
+    drop_column = ['Name', 'Age', 'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin']
+    
+    
+train_set["hour"] = [t.hour for t in pd.DatetimeIndex(train_set.datetime)]
+train_set["day"] = [t.dayofweek for t in pd.DatetimeIndex(train_set.datetime)]
+train_set["month"] = [t.month for t in pd.DatetimeIndex(train_set.datetime)]
+train_set['year'] = [t.year for t in pd.DatetimeIndex(train_set.datetime)]
+train_set['year'] = train_set['year'].map({2011:0, 2012:1})
+
+test_set["hour"] = [t.hour for t in pd.DatetimeIndex(test_set.datetime)]
+test_set["day"] = [t.dayofweek for t in pd.DatetimeIndex(test_set.datetime)]
+test_set["month"] = [t.month for t in pd.DatetimeIndex(test_set.datetime)]
+test_set['year'] = [t.year for t in pd.DatetimeIndex(test_set.datetime)]
+test_set['year'] = test_set['year'].map({2011:0, 2012:1})
+
+train_set.drop('datetime',axis=1,inplace=True) 
+train_set.drop('casual',axis=1,inplace=True)
+train_set.drop('registered',axis=1,inplace=True)
+
+test_set.drop('datetime',axis=1,inplace=True)
+
+
+train_set.set_index('Id', inplace=True)
+def dr_outlier(train_set):
+    quartile_1 = train_set.quantile(0.25)
+    quartile_3 = train_set.quantile(0.75)
+    IQR = quartile_3 - quartile_1
+    condition = (train_set < (quartile_1 - 1.5 * IQR)) | (train_set > (quartile_3 + 1.5 * IQR))
+    condition = condition.any(axis=1)
+    
+    return train_set, train_set.drop(train_set.index, axis=0)
+
+dr_outlier(train_set)
+
+print()
+
+
+alldata = pd.concat((train_set, test_set), axis=0)
+alldata_index = alldata.index
+
+################## NA 값 20프로 이상은 drop! ##########
+NA_Ratio = 0.8 * len(alldata)
+alldata.dropna(axis=1, thresh=NA_Ratio, inplace=True)
+
+################### 수치형,카테고리형 분리,범위 설정 #############
+alldata_obj = alldata.select_dtypes(include='object') 
+alldata_num = alldata.select_dtypes(exclude='object')
+
+for objList in alldata_obj:
+    alldata_obj[objList] = LabelEncoder().fit_transform(alldata_obj[objList].astype(str))
+##################### 소수 na 값 처리 ###################    
+imputer = SimpleImputer(strategy='mean')
+imputer.fit(alldata_num)
+alldata_impute = imputer.transform(alldata_num)
+alldata_num = pd.DataFrame(alldata_impute, columns=alldata_num.columns, index=alldata_index)  
+###################### 분리한 데이터 다시 합치기 #####################
+alldata = pd.merge(alldata_obj, alldata_num, left_index=True, right_index=True)  
+##################### 트레인, 테스트 다시 나누기 ##################
+train_set = alldata[:len(train_set)]
+test_set = alldata[len(train_set):]
+############### 트레인 데이터에 sale price 합치기 ##############
+train_set['SalePrice'] = trainLabel
+############### sale price 다시 드랍 #####################
+train_set = train_set.drop(['SalePrice'], axis =1)
+print(train_set)
+print(trainLabel)
+print(test_set)
+//도형
+
+
+
+# outliers 처리
+def outliers(df, col):
+    out = []
+    m = np.mean(df[col])
+    sd = np.std(df[col])
+    
+    for i in df[col]: 
+        z = (i-m)/sd
+        if np.abs(z) > 3: 
+            out.append(i)
+            
+    print("Outliers:",out)
+    print("med",np.min(out))
+    return np.min(out)
+
+col = "Fare"
+medOutlier = outliers(train_set,col)
+train_set[train_set[col] >= medOutlier]
+프린트 찍어보면 앎 대체해서 넣는다는 의미
+# print(train_set.describe()["Fare"])
+
+col = "Age"
+medOutlier = outliers(train_set,col)
+train_set[train_set[col] >= medOutlier]
+# print(train_set.describe()["Age"])
+
+test_set.columns
+
+# 날짜 feature 생성
+L = ['year', 'month', 'date', 'hour', 'weekday']
+train_set = train_set.join(pd.concat([getattr(train_set['datetime'].dt, i).rename(i) for i in L], axis=1))
+test_set = test_set.join(pd.concat([getattr(test_set['datetime'].dt, i).rename(i) for i in L], axis=1))
+
+ 
+#### 이상치 처리 ####
+# train_set = train_set[train_set['weather'] != 4]  # weather가 4인 데이터는 이상치(폭우, 폭설이 내리는 날 저녁 6시에 대여)
+
+
+# 이상치 제거 'SalePrice'와  'MSSubClass'
+train_set = train_set.drop(train_set[(train_set['MSSubClass']>50) 
+                                     & (train_set['SalePrice']<700000)].index) 
+train_set = train_set.drop(train_set[(train_set['TotalBsmtSF']>4000)].index) 
+# 이상치 제거 'SalePrice'와  'GrLivArea'
+train_set = train_set.drop(train_set[(train_set['GrLivArea']>4000) 
+                                     & (train_set['SalePrice']<300000)].index) 
+train_set = train_set.drop(train_set[(train_set['TotalBsmtSF']>4000)].index) 
+
+
+# all_data_set 데이터
+label = train_set['SalePrice']
+all_data_set = pd.concat((train_set, test_set)).reset_index(drop=True)
+all_data_set = all_data_set.drop(['SalePrice'], axis=1)
+print(all_data_set.shape)   # (2917, 79)
+print(all_data_set)
+
+# 결측값 조회
+all_data_set_na = (all_data_set.isnull().sum() / len(all_data_set) * 100 ).sort_values(ascending=False)[ :25]
+# print(all_data_set_na)
+
+# ###(1) PoolQC 와 MiscFeature
+all_data_set['PoolQC'] = all_data_set['PoolQC'].fillna('None')
+
+# 모든 데이터 즉 object 데이터, int64 및 float64 데이터의 결측치 제거
+cat_col = all_data_set.dtypes[all_data_set.dtypes == 'object'].index   
+for col in cat_col:
+    all_data_set[col] = all_data_set[col].fillna('None')
+
+col_count = all_data_set.dtypes[(all_data_set.dtypes == 'int64') | (all_data_set.dtypes == 'float64')].index
+
+for col in col_count:
+    all_data_set[col] = all_data_set[col].fillna(0)
+    
+(all_data_set.isnull().sum() / len(all_data_set) * 100).sort_values(ascending=False)[:5]    # 결측치 제거 확인
+print(all_data_set.head(5))  
+
+# 모든 데이터의 문자를 숫자로 변경
+from sklearn.preprocessing import LabelEncoder
+cat_col = list(all_data_set.dtypes[all_data_set.dtypes == 'object'].index)  # 문자열로 된 feature 추출]
+for col in cat_col:
+    all_data_set[col] = LabelEncoder().fit_transform(all_data_set[col].values)
+
+# 집의 건축물 종류를 구분하기 위해 숫자를 문자로 변경
+all_data_set['MSSubClass'] = all_data_set['MSSubClass'].astype('category')
+
+# 월을 계절로 변환하기 위해 숫자를 문자로 변경 (범주화하기)
+all_data_set['MoSold'] = all_data_set['MoSold'].astype('category')
+
+print(all_data_set['MoSold'].value_counts())    # category 생성되었는지 확인
+print(all_data_set.dtypes)
+
+# 집의 전체 넓이 확인
+all_data_set['TotalSF'] = all_data_set['TotalBsmtSF'] + all_data_set['1stFlrSF'] + all_data_set['2ndFlrSF']
+
+# 정규분포와 가까운 모양으로 변환
+num_col = list(all_data_set.dtypes[(all_data_set.dtypes == 'int64') | (all_data_set.dtypes == 'float64')].index)
+print(num_col)
+print(all_data_set[num_col].head(3))    # 3줄까지 출력하여 확인
+
+all_data_set[num_col].apply(lambda x : skew(x)).sort_values(ascending=False)
+skewed_feat = all_data_set[num_col].apply(lambda x : skew(x)).sort_values(ascending=False)
+skewed_feat = skewed_feat[abs(skewed_feat) > 0.75]
+print(len(skewed_feat))
+
+skewed_feat.index
+skewed_feat = skewed_feat[abs(skewed_feat) > 0.75]
+print(len(skewed_feat))
+
+from scipy.special import boxcox1p
+skewed_col = skewed_feat.index
+for col in skewed_col:
+    all_data_set[col] = boxcox1p(all_data_set[col], 0.5)   # 0.5는 lambda 값으로 변형정도를 결정한 값임
+      
+##### all_data_set 데이터 확인하기  
+print(all_data_set.isnull().sum())
+all_data_set['TotalSF'] = all_data_set['TotalSF'].fillna(all_data_set['TotalSF'].median())
+print(all_data_set.shape)   # (2917, 80)
+
+
+# 문자로 변경
+all_data_set['MSSubClass'] = all_data_set['MSSubClass'].apply(str)
+all_data_set['OverallCond'] = all_data_set['OverallCond'].astype(str)
+all_data_set['YrSold'] = all_data_set['YrSold'].astype(str)
+all_data_set['MoSold'] = all_data_set['MoSold'].astype(str)
+
+# 라벨인코딩
+from sklearn.preprocessing import LabelEncoder
+cols = ('FireplaceQu', 'BsmtQual', 'BsmtCond', 'GarageQual', 'GarageCond', 
+        'ExterQual', 'ExterCond','HeatingQC', 'PoolQC', 'KitchenQual', 'BsmtFinType1', 
+        'BsmtFinType2', 'Functional', 'Fence', 'BsmtExposure', 'GarageFinish', 'LandSlope',
+        'LotShape', 'PavedDrive', 'Street', 'Alley', 'CentralAir', 'MSSubClass', 'OverallCond', 
+        'YrSold', 'MoSold')
+for c in cols:
+    lbl = LabelEncoder() 
+    lbl.fit(list(all_data_set[c].values)) 
+    all_data_set[c] = lbl.transform(list(all_data_set[c].values))
+
+# shape        
+print('Shape all_data: {}'.format(all_data_set.shape))
+
+# Adding total sqfootage feature 
+all_data_set['TotalSF'] = all_data_set['TotalBsmtSF'] + all_data_set['1stFlrSF'] + all_data_set['2ndFlrSF']
+numeric_feats = all_data_set.dtypes[all_data_set.dtypes != "object"].index
+
+all_data = pd.get_dummies(all_data_set)
+print(all_data_set.shape)
+
+# all_data_set을 train_set과 test_set으로 분할
+train_set = all_data_set[:len(train_set)]
+test_set = all_data_set[len(train_set):]
+print(train_set.shape, test_set.shape)  # (1458, 80) (1458, 80)
+
+x = train_set
+y = label   # train_set['SalePrice']
+
+//새봄
+
+
+
+import pandas as pd
+
+Pclass1 = train_set["Survived"][train_set["Pclass"] == 1].value_counts(normalize = True)[1]*100
+Pclass2 = train_set["Survived"][train_set["Pclass"] == 2].value_counts(normalize = True)[1]*100
+Pclass3 = train_set["Survived"][train_set["Pclass"] == 3].value_counts(normalize = True)[1]*100
+print(f"Percentage of Pclass 1 who survived: {Pclass1}")
+print(f"Percentage of Pclass 2 who survived: {Pclass2}")
+print(f"Percentage of Pclass 3 who survived: {Pclass3}")
+
+sns.barplot(x="SibSp", y="Survived", data=train_set)
+
+train_set = train_set.fillna({"Embarked": "C"})
+
+train_set = pd.get_dummies(train_set,drop_first=True)
+#drop_first=True 원핫 인코딩에서 새로 열을 만드는 것이 아닌 기존 값을 0,1로 바꿔줌
+
+imputer = KNNImputer(missing_values=np.nan, n_neighbors=3)
+
+train_set.Age = imputer.fit_transform(train_set.Age.values.reshape(-1,1)) # reshape(-1,1) : 1차원으로 만듬
+test_set.Age = imputer.fit_transform(test_set.Age.values.reshape(-1,1)) # reshape(-1,1) : 1차원으로 만듬
+test_set.Fare = imputer.fit_transform(test_set.Fare.values.reshape(-1,1)) # reshape(-1,1) : 1차원으로 만듬
+
+parameters_rfr = [{
+    'RFR__bootstrap': [True], 'RFR__max_depth': [5, 10, None], 
+    'RFR__max_features': ['auto', 'log2'], 'RFR__n_estimators': [5, 6, 7, 8, 9, 10, 11, 12, 13, 15]}]
+
+import inspect, os
+a = inspect.getfile(inspect.currentframe()) #현재 파일이 위치한 경로 + 현재 파일 명
+print(a)
+print(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))) #현재 파일이 위치한 경로
+print(a.split("\\")[-1]) #현재 파일 명
+current_name = a.split("\\")[-1]
+# ###################### IQR 이용해서 train_set에서 이상치나온 행 삭제########################
+# def detect_outliers(df, n, features):
+#     outlier_indices = []
+#     for col in features:
+#         Q1 = np.percentile(df[col], 25)
+#         Q3 = np.percentile(df[col], 75)
+#         IQR = Q3 - Q1
+        
+#         outlier_step = 1.5 * IQR
+        
+#         outlier_list_col = df[(df[col] < Q1 - outlier_step) | (df[col] > Q3 + outlier_step)].index
+#         outlier_indices.extend(outlier_list_col)
+#     outlier_indices = Counter(outlier_indices)
+#     multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
+        
+#     return multiple_outliers
+
+#################긁어온거####################################
+
+num_strong_corr = ['SalePrice','OverallQual','TotalBsmtSF','GrLivArea','GarageCars',
+                   'FullBath','YearBuilt','YearRemodAdd']
+
+num_weak_corr = ['MSSubClass', 'LotFrontage', 'LotArea', 'OverallCond', 'MasVnrArea', 'BsmtFinSF1',
+                 'BsmtFinSF2', 'BsmtUnfSF', '1stFlrSF', '2ndFlrSF','LowQualFinSF', 'BsmtFullBath',
+                 'BsmtHalfBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'TotRmsAbvGrd',
+                 'Fireplaces', 'GarageYrBlt', 'GarageArea', 'WoodDeckSF','OpenPorchSF',
+                 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal', 'MoSold', 'YrSold']
+
+catg_strong_corr = ['MSZoning', 'Neighborhood', 'Condition2', 'MasVnrType', 'ExterQual',
+                    'BsmtQual','CentralAir', 'Electrical', 'KitchenQual', 'SaleType']
+
+catg_weak_corr = ['Street', 'Alley', 'LotShape', 'LandContour', 'Utilities', 'LotConfig', 
+                  'LandSlope', 'Condition1',  'BldgType', 'HouseStyle', 'RoofStyle', 
+                  'RoofMatl', 'Exterior1st', 'Exterior2nd', 'ExterCond', 'Foundation', 
+                  'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2', 'Heating', 
+                  'HeatingQC', 'Functional', 'FireplaceQu', 'GarageType', 'GarageFinish', 
+                  'GarageQual', 'GarageCond', 'PavedDrive', 'PoolQC', 'Fence', 'MiscFeature', 
+                  'SaleCondition' ]
+
+cols_fillna = ['PoolQC','MiscFeature','Alley','Fence','MasVnrType','FireplaceQu',
+               'GarageQual','GarageCond','GarageFinish','GarageType', 'Electrical',
+               'KitchenQual', 'SaleType', 'Functional', 'Exterior2nd', 'Exterior1st',
+               'BsmtExposure','BsmtCond','BsmtQual','BsmtFinType1','BsmtFinType2',
+               'MSZoning', 'Utilities']
+
+for col in cols_fillna : 
+    train_set[col].fillna('None', inplace=True)
+    test_set[col].fillna('None', inplace=True)
+
+total = train_set.isnull().sum().sort_values(ascending=False)
+percent = (train_set.isnull().sum()/train_set.isnull().count()).sort_values(ascending=False)
+missing_data = pd.concat([total, percent], axis=1, keys=['Total','Percent'])
+
+train_set.fillna(train_set.mean(), inplace=True)
+test_set.fillna(test_set.mean(), inplace=True)
+
+total = train_set.isnull().sum().sort_values(ascending=False)
+percent = (train_set.isnull().sum()/train_set.isnull().count()).sort_values(ascending=False)
+missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+
+print(train_set.isnull().sum().sum(), test_set.isnull().sum().sum()) # 0 0 출력시 결측치 확인 끝
+
+id_test = test_set['Id']
+
+to_drop_num = num_weak_corr
+to_drop_catg = catg_weak_corr
+
+cols_to_drop = ['Id'] + to_drop_num + to_drop_catg
+
+for df in [train_set, test_set] :
+    df.drop(cols_to_drop, inplace=True, axis = 1)
+    
+# 'MSZoning'
+msz_catg2 = ['RM', 'RH']
+msz_catg3 = ['RL', 'FV'] 
+
+# Neighborhood
+nbhd_catg2 = ['Blmngtn', 'ClearCr', 'CollgCr', 'Crawfor', 'Gilbert', 'NWAmes', 'Somerst', 'Timber', 'Veenker']
+nbhd_catg3 = ['NoRidge', 'NridgHt', 'StoneBr']
+
+# Condition2
+cond2_catg2 = ['Norm', 'RRAe']
+cond2_catg3 = ['PosA', 'PosN'] 
+
+# SaleType
+SlTy_catg1 = ['Oth']
+SlTy_catg3 = ['CWD']
+SlTy_catg4 = ['New', 'Con']
+
+for df in [train_set, test_set]:
+    
+    df['MSZ_num'] = 1  
+    df.loc[(df['MSZoning'].isin(msz_catg2) ), 'MSZ_num'] = 2    
+    df.loc[(df['MSZoning'].isin(msz_catg3) ), 'MSZ_num'] = 3        
+    
+    df['NbHd_num'] = 1       
+    df.loc[(df['Neighborhood'].isin(nbhd_catg2) ), 'NbHd_num'] = 2    
+    df.loc[(df['Neighborhood'].isin(nbhd_catg3) ), 'NbHd_num'] = 3    
+
+    df['Cond2_num'] = 1       
+    df.loc[(df['Condition2'].isin(cond2_catg2) ), 'Cond2_num'] = 2    
+    df.loc[(df['Condition2'].isin(cond2_catg3) ), 'Cond2_num'] = 3    
+    
+    df['Mas_num'] = 1       
+    df.loc[(df['MasVnrType'] == 'Stone' ), 'Mas_num'] = 2 
+    
+    df['ExtQ_num'] = 1       
+    df.loc[(df['ExterQual'] == 'TA' ), 'ExtQ_num'] = 2     
+    df.loc[(df['ExterQual'] == 'Gd' ), 'ExtQ_num'] = 3     
+    df.loc[(df['ExterQual'] == 'Ex' ), 'ExtQ_num'] = 4     
+   
+    df['BsQ_num'] = 1          
+    df.loc[(df['BsmtQual'] == 'Gd' ), 'BsQ_num'] = 2     
+    df.loc[(df['BsmtQual'] == 'Ex' ), 'BsQ_num'] = 3     
+ 
+    df['CA_num'] = 0          
+    df.loc[(df['CentralAir'] == 'Y' ), 'CA_num'] = 1    
+
+    df['Elc_num'] = 1       
+    df.loc[(df['Electrical'] == 'SBrkr' ), 'Elc_num'] = 2 
+
+
+    df['KiQ_num'] = 1       
+    df.loc[(df['KitchenQual'] == 'TA' ), 'KiQ_num'] = 2     
+    df.loc[(df['KitchenQual'] == 'Gd' ), 'KiQ_num'] = 3     
+    df.loc[(df['KitchenQual'] == 'Ex' ), 'KiQ_num'] = 4      
+    
+    df['SlTy_num'] = 2       
+    df.loc[(df['SaleType'].isin(SlTy_catg1) ), 'SlTy_num'] = 1  
+    df.loc[(df['SaleType'].isin(SlTy_catg3) ), 'SlTy_num'] = 3  
+    df.loc[(df['SaleType'].isin(SlTy_catg4) ), 'SlTy_num'] = 4 
+
+train_set.drop(['MSZoning','Neighborhood' , 'Condition2', 'MasVnrType', 'ExterQual', 'BsmtQual','CentralAir', 'Electrical', 'KitchenQual', 'SaleType', 'Cond2_num', 'Mas_num', 'CA_num', 'Elc_num', 'SlTy_num'], axis = 1, inplace = True)
+test_set.drop(['MSZoning', 'Neighborhood' , 'Condition2', 'MasVnrType', 'ExterQual', 'BsmtQual','CentralAir', 'Electrical', 'KitchenQual', 'SaleType', 'Cond2_num', 'Mas_num', 'CA_num', 'Elc_num', 'SlTy_num'], axis = 1, inplace = True)
+
+
+##############################긁어온거끝################################
+
+
+
+//안결
+
+
+def detect_outliers(df,n,features):
+    
+    outlier_indices = []  
+    
+    for col in features: 
+        Q1 = np.percentile(df[col],25)
+        Q3 = np.percentile(df[col],75)
+        IQR = Q3 - Q1
+        
+        outlier_step = 1.5*IQR  
+        outlier_list_col = df[(df[col] < Q1 - outlier_step) | (df[col] > Q3 + outlier_step)].index
+        outlier_indices.extend(outlier_list_col)           
+    outlier_indices = Counter(outlier_indices)
+    multiple_outliers = list( k for k, v in outlier_indices.items() if v > n)
+        
+    return multiple_outliers
+    
+Outliers_to_drop = detect_outliers(train_set,2,["Age",'SibSp','Parch','Fare'])
+
+
+train_set.Age = train_set.Age.fillna(value=train_set.Age.mean())
+
+test_set.Fare = test_set.Fare.fillna(value=test_set.Fare.mode())
+
+train_set["hour"] = [t.hour for t in pd.DatetimeIndex(train_set.datetime)]
+
+
+//초원
+
+
+import numpy as np
+import pandas as pd
+from collections import Counter
+from sklearn.experimental import enable_halving_search_cv
+from sklearn.model_selection import train_test_split, KFold,\
+    HalvingRandomSearchCV
+from sklearn.preprocessing import MinMaxScaler
+import warnings
+warnings.filterwarnings('ignore') # warnig 출력 안함
+
+encording_columns = ['MSZoning','Street','Alley','LotShape','LandContour','Utilities','LotConfig',
+                    'LandSlope','Neighborhood','Condition1','Condition2','BldgType','HouseStyle',
+                    'RoofStyle','RoofMatl','Exterior1st','Exterior2nd','MasVnrType','ExterQual',
+                    'ExterCond','Foundation','BsmtQual','BsmtCond','BsmtExposure','BsmtFinType1',
+                    'BsmtFinType2','Heating','HeatingQC','CentralAir','Electrical','KitchenQual',
+                    'Functional','FireplaceQu','GarageType','GarageFinish','GarageQual','GarageCond',
+                    'PavedDrive','PoolQC','Fence','MiscFeature','SaleType','SaleCondition']
+
+non_encording_columns = ['MSSubClass','LotFrontage','LotArea','OverallQual','OverallCond',
+                         'YearBuilt','YearRemodAdd','MasVnrArea','BsmtFinSF1','BsmtFinSF2',
+                         'BsmtUnfSF','TotalBsmtSF','1stFlrSF','2ndFlrSF','LowQualFinSF',
+                         'GrLivArea','BsmtFullBath','BsmtHalfBath','FullBath','HalfBath','BedroomAbvGr',
+                         'KitchenAbvGr','TotRmsAbvGrd','Fireplaces','GarageYrBlt','GarageCars','GarageArea',
+                         'WoodDeckSF','OpenPorchSF','EnclosedPorch','3SsnPorch','ScreenPorch','PoolArea',
+                         'MiscVal','MoSold','YrSold']
+
+
+
+#1. 데이터
+path = 'D:\study_data\_data\kaggle_house/'
+train_set = pd.read_csv(path + 'train.csv') # + 명령어는 문자를 앞문자와 더해줌  index_col=n n번째 컬럼을 인덱스로 인식
+            
+test_set = pd.read_csv(path + 'test.csv') # 예측에서 쓸거임  3
+
+###################### IQR 이용해서 train_set에서 이상치나온 행 삭제########################
+def detect_outliers(df, n, features):
+    outlier_indices = []
+    for col in features:
+        Q1 = np.percentile(df[col], 25)
+        Q3 = np.percentile(df[col], 75)
+        IQR = Q3 - Q1
+        
+        outlier_step = 1.5 * IQR
+        
+        outlier_list_col = df[(df[col] < Q1 - outlier_step) | (df[col] > Q3 + outlier_step)].index
+        outlier_indices.extend(outlier_list_col)
+    outlier_indices = Counter(outlier_indices)
+    multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
+        
+    return multiple_outliers
+        
+Outliers_to_drop = detect_outliers(train_set, 2, ['MSSubClass', 'LotFrontage', 'LotArea', 'OverallQual',
+       'OverallCond', 'YearBuilt', 'YearRemodAdd', 'MasVnrArea', 'BsmtFinSF1',
+       'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', '1stFlrSF', '2ndFlrSF',
+       'LowQualFinSF', 'GrLivArea', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath',
+       'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'TotRmsAbvGrd',
+       'Fireplaces', 'GarageYrBlt', 'GarageCars', 'GarageArea', 'WoodDeckSF',
+       'OpenPorchSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea',
+       'MiscVal', 'MoSold', 'YrSold'])
+
+
+train_set.loc[Outliers_to_drop]
+print(Outliers_to_drop)
+
+train_set = train_set.drop(Outliers_to_drop, axis = 0).reset_index(drop=True)
+train_set.shape
+
+print(train_set)
+
+#################긁어온거####################################
+
+num_strong_corr = ['SalePrice','OverallQual','TotalBsmtSF','GrLivArea','GarageCars',
+                   'FullBath','YearBuilt','YearRemodAdd']
+
+num_weak_corr = ['MSSubClass', 'LotFrontage', 'LotArea', 'OverallCond', 'MasVnrArea', 'BsmtFinSF1',
+                 'BsmtFinSF2', 'BsmtUnfSF', '1stFlrSF', '2ndFlrSF','LowQualFinSF', 'BsmtFullBath',
+                 'BsmtHalfBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'TotRmsAbvGrd',
+                 'Fireplaces', 'GarageYrBlt', 'GarageArea', 'WoodDeckSF','OpenPorchSF',
+                 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal', 'MoSold', 'YrSold']
+
+catg_strong_corr = ['MSZoning', 'Neighborhood', 'Condition2', 'MasVnrType', 'ExterQual',
+                    'BsmtQual','CentralAir', 'Electrical', 'KitchenQual', 'SaleType']
+
+catg_weak_corr = ['Street', 'Alley', 'LotShape', 'LandContour', 'Utilities', 'LotConfig', 
+                  'LandSlope', 'Condition1',  'BldgType', 'HouseStyle', 'RoofStyle', 
+                  'RoofMatl', 'Exterior1st', 'Exterior2nd', 'ExterCond', 'Foundation', 
+                  'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2', 'Heating', 
+                  'HeatingQC', 'Functional', 'FireplaceQu', 'GarageType', 'GarageFinish', 
+                  'GarageQual', 'GarageCond', 'PavedDrive', 'PoolQC', 'Fence', 'MiscFeature', 
+                  'SaleCondition' ]
+
+cols_fillna = ['PoolQC','MiscFeature','Alley','Fence','MasVnrType','FireplaceQu',
+               'GarageQual','GarageCond','GarageFinish','GarageType', 'Electrical',
+               'KitchenQual', 'SaleType', 'Functional', 'Exterior2nd', 'Exterior1st',
+               'BsmtExposure','BsmtCond','BsmtQual','BsmtFinType1','BsmtFinType2',
+               'MSZoning', 'Utilities']
+
+for col in cols_fillna : 
+    train_set[col].fillna('None', inplace=True)
+    test_set[col].fillna('None', inplace=True)
+
+total = train_set.isnull().sum().sort_values(ascending=False)
+percent = (train_set.isnull().sum()/train_set.isnull().count()).sort_values(ascending=False)
+missing_data = pd.concat([total, percent], axis=1, keys=['Total','Percent'])
+
+train_set.fillna(train_set.mean(), inplace=True)
+test_set.fillna(test_set.mean(), inplace=True)
+
+total = train_set.isnull().sum().sort_values(ascending=False)
+percent = (train_set.isnull().sum()/train_set.isnull().count()).sort_values(ascending=False)
+missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+
+print(train_set.isnull().sum().sum(), test_set.isnull().sum().sum()) # 0 0 출력시 결측치 확인 끝
+
+id_test = test_set['Id']
+
+to_drop_num = num_weak_corr
+to_drop_catg = catg_weak_corr
+
+cols_to_drop = ['Id'] + to_drop_num + to_drop_catg
+
+for df in [train_set, test_set] :
+    df.drop(cols_to_drop, inplace=True, axis = 1)
+    
+# 'MSZoning'
+msz_catg2 = ['RM', 'RH']
+msz_catg3 = ['RL', 'FV'] 
+
+# Neighborhood
+nbhd_catg2 = ['Blmngtn', 'ClearCr', 'CollgCr', 'Crawfor', 'Gilbert', 'NWAmes', 'Somerst', 'Timber', 'Veenker']
+nbhd_catg3 = ['NoRidge', 'NridgHt', 'StoneBr']
+
+# Condition2
+cond2_catg2 = ['Norm', 'RRAe']
+cond2_catg3 = ['PosA', 'PosN'] 
+
+# SaleType
+SlTy_catg1 = ['Oth']
+SlTy_catg3 = ['CWD']
+SlTy_catg4 = ['New', 'Con']
+
+for df in [train_set, test_set]:
+    
+    df['MSZ_num'] = 1  
+    df.loc[(df['MSZoning'].isin(msz_catg2) ), 'MSZ_num'] = 2    
+    df.loc[(df['MSZoning'].isin(msz_catg3) ), 'MSZ_num'] = 3        
+    
+    df['NbHd_num'] = 1       
+    df.loc[(df['Neighborhood'].isin(nbhd_catg2) ), 'NbHd_num'] = 2    
+    df.loc[(df['Neighborhood'].isin(nbhd_catg3) ), 'NbHd_num'] = 3    
+
+    df['Cond2_num'] = 1       
+    df.loc[(df['Condition2'].isin(cond2_catg2) ), 'Cond2_num'] = 2    
+    df.loc[(df['Condition2'].isin(cond2_catg3) ), 'Cond2_num'] = 3    
+    
+    df['Mas_num'] = 1       
+    df.loc[(df['MasVnrType'] == 'Stone' ), 'Mas_num'] = 2 
+    
+    df['ExtQ_num'] = 1       
+    df.loc[(df['ExterQual'] == 'TA' ), 'ExtQ_num'] = 2     
+    df.loc[(df['ExterQual'] == 'Gd' ), 'ExtQ_num'] = 3     
+    df.loc[(df['ExterQual'] == 'Ex' ), 'ExtQ_num'] = 4     
+   
+    df['BsQ_num'] = 1          
+    df.loc[(df['BsmtQual'] == 'Gd' ), 'BsQ_num'] = 2     
+    df.loc[(df['BsmtQual'] == 'Ex' ), 'BsQ_num'] = 3     
+ 
+    df['CA_num'] = 0          
+    df.loc[(df['CentralAir'] == 'Y' ), 'CA_num'] = 1    
+
+    df['Elc_num'] = 1       
+    df.loc[(df['Electrical'] == 'SBrkr' ), 'Elc_num'] = 2 
+
+
+    df['KiQ_num'] = 1       
+    df.loc[(df['KitchenQual'] == 'TA' ), 'KiQ_num'] = 2     
+    df.loc[(df['KitchenQual'] == 'Gd' ), 'KiQ_num'] = 3     
+    df.loc[(df['KitchenQual'] == 'Ex' ), 'KiQ_num'] = 4      
+    
+    df['SlTy_num'] = 2       
+    df.loc[(df['SaleType'].isin(SlTy_catg1) ), 'SlTy_num'] = 1  
+    df.loc[(df['SaleType'].isin(SlTy_catg3) ), 'SlTy_num'] = 3  
+    df.loc[(df['SaleType'].isin(SlTy_catg4) ), 'SlTy_num'] = 4 
+
+train_set.drop(['MSZoning','Neighborhood' , 'Condition2', 'MasVnrType', 'ExterQual', 'BsmtQual','CentralAir', 'Electrical', 'KitchenQual', 'SaleType', 'Cond2_num', 'Mas_num', 'CA_num', 'Elc_num', 'SlTy_num'], axis = 1, inplace = True)
+test_set.drop(['MSZoning', 'Neighborhood' , 'Condition2', 'MasVnrType', 'ExterQual', 'BsmtQual','CentralAir', 'Electrical', 'KitchenQual', 'SaleType', 'Cond2_num', 'Mas_num', 'CA_num', 'Elc_num', 'SlTy_num'], axis = 1, inplace = True)
+
+
+##############################긁어온거끝################################
+
+x = train_set.drop(['SalePrice'], axis=1)
+y = train_set['SalePrice']
+x = np.array(x)
+
+allfeature = round(x.shape[1]*0.2, 0)
+print('자를 갯수: ', int(allfeature))
+
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, shuffle=True, train_size=0.8, random_state=1234)
+
+# 2. 모델구성
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from xgboost import XGBRegressor
+
+models = [DecisionTreeRegressor(), RandomForestRegressor(), GradientBoostingRegressor(), XGBRegressor()]
+
+# 3. 컴파일, 훈련, 평가, 예측
+for model in models:
+    model.fit(x_train, y_train)
+    score = model.score(x_test, y_test)
+    if str(model).startswith('XGB'):
+        print('XGB 의 스코어:        ', score)
+    else:
+        print(str(model).strip('()'), '의 스코어:        ', score)
+        
+    featurelist = []
+    for a in range(int(allfeature)):
+        featurelist.append(np.argsort(model.feature_importances_)[a])
+        
+    x_bf = np.delete(x, featurelist, axis=1)
+    x_train2, x_test2, y_train2, y_test2 = train_test_split(x_bf, y, shuffle=True, train_size=0.8, random_state=1234)
+    model.fit(x_train2, y_train2)
+    score = model.score(x_test2, y_test2)
+    if str(model).startswith('XGB'):
+        print('XGB 의 드랍후 스코어: ', score)
+    else:
+        print(str(model).strip('()'), '의 드랍후 스코어: ', score)
+        
+
+# 자를 갯수:  2
+# DecisionTreeRegressor 의 스코어:         0.7679125675777974
+# DecisionTreeRegressor 의 드랍후 스코어:  0.7840868446715827
+# RandomForestRegressor 의 스코어:         0.8766456123293699
+# RandomForestRegressor 의 드랍후 스코어:  0.8696261906140561
+# GradientBoostingRegressor 의 스코어:         0.8741234916950783
+# GradientBoostingRegressor 의 드랍후 스코어:  0.8762868373727299
+# XGB 의 스코어:         0.845574071747059
+# XGB 의 드랍후 스코어:  0.8527746335749569
+        
+# 결측치 컨텍빼고 중간값으로 대체함
+
+

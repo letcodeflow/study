@@ -1,0 +1,7 @@
+;  겟더미 
+; 타이타닉 원핫인코더 그리기
+; 3060 하드 cpu인텔 시간 
+; 깃팟 코랩 배치사이즈
+; cifar matshow
+
+import pandas as pd

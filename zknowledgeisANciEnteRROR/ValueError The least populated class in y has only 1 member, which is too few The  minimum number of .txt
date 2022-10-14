@@ -1,0 +1,4 @@
+ValueError: The least populated class in y has only 1 member, which is too few. The 
+minimum number of groups for any class cannot be less than 2.
+
+train test 의 stratify=y 를 제거함

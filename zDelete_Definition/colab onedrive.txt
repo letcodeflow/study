@@ -1,0 +1,266 @@
+!curl https://rclone.org/install.sh | sudo bash
+
+$ rclone authorize "onedrive" = cmd 해당 폴더 이동 ./rclone.exe authorize 'onedrive' -사인인 허용
+
+!rclone config
+
+Current remotes:
+
+Name                 Type
+====                 ====
+onedrive             onedrive
+
+e) Edit existing remote
+n) New remote
+d) Delete remote
+r) Rename remote
+c) Copy remote
+s) Set configuration password
+q) Quit config
+e/n/d/r/c/s/q> d
+
+Select remote.
+Choose a number from below, or type in an existing value.
+ 1 > onedrive
+remote> 1
+
+
+No remotes found, make a new one?
+n) New remote
+s) Set configuration password
+q) Quit config
+n/s/q> n
+
+Enter name for new remote.
+name> onedrive
+
+Option Storage.
+Type of storage to configure.
+Choose a number from below, or type in your own value.
+ 1 / 1Fichier
+   \ (fichier)
+ 2 / Akamai NetStorage
+   \ (netstorage)
+ 3 / Alias for an existing remote
+   \ (alias)
+ 4 / Amazon Drive
+   \ (amazon cloud drive)
+ 5 / Amazon S3 Compliant Storage Providers including AWS, Alibaba, Ceph, China Mobile, Cloudflare, ArvanCloud, Digital Ocean, Dreamhost, Huawei OBS, IBM COS, IDrive e2, Lyve Cloud, Minio, Netease, RackCorp, Scaleway, SeaweedFS, StackPath, Storj, Tencent COS and Wasabi
+   \ (s3)
+ 6 / Backblaze B2
+   \ (b2)
+ 7 / Better checksums for other remotes
+   \ (hasher)
+ 8 / Box
+   \ (box)
+ 9 / Cache a remote
+   \ (cache)
+10 / Citrix Sharefile
+   \ (sharefile)
+11 / Combine several remotes into one
+   \ (combine)
+12 / Compress a remote
+   \ (compress)
+13 / Dropbox
+   \ (dropbox)
+14 / Encrypt/Decrypt a remote
+   \ (crypt)
+15 / Enterprise File Fabric
+   \ (filefabric)
+16 / FTP
+   \ (ftp)
+17 / Google Cloud Storage (this is not Google Drive)
+   \ (google cloud storage)
+18 / Google Drive
+   \ (drive)
+19 / Google Photos
+   \ (google photos)
+20 / HTTP
+   \ (http)
+21 / Hadoop distributed file system
+   \ (hdfs)
+22 / HiDrive
+   \ (hidrive)
+23 / Hubic
+   \ (hubic)
+24 / In memory object storage system.
+   \ (memory)
+25 / Internet Archive
+   \ (internetarchive)
+26 / Jottacloud
+   \ (jottacloud)
+27 / Koofr, Digi Storage and other Koofr-compatible storage providers
+   \ (koofr)
+28 / Local Disk
+   \ (local)
+29 / Mail.ru Cloud
+   \ (mailru)
+30 / Mega
+   \ (mega)
+31 / Microsoft Azure Blob Storage
+   \ (azureblob)
+32 / Microsoft OneDrive
+   \ (onedrive)
+33 / OpenDrive
+   \ (opendrive)
+34 / OpenStack Swift (Rackspace Cloud Files, Memset Memstore, OVH)
+   \ (swift)
+35 / Pcloud
+   \ (pcloud)
+36 / Put.io
+   \ (putio)
+37 / QingCloud Object Storage
+   \ (qingstor)
+38 / SSH/SFTP
+   \ (sftp)
+39 / Sia Decentralized Cloud
+   \ (sia)
+40 / Storj Decentralized Cloud Storage
+   \ (storj)
+41 / Sugarsync
+   \ (sugarsync)
+42 / Transparently chunk/split large files
+   \ (chunker)
+43 / Union merges the contents of several upstream fs
+   \ (union)
+44 / Uptobox
+   \ (uptobox)
+45 / WebDAV
+   \ (webdav)
+46 / Yandex Disk
+   \ (yandex)
+47 / Zoho
+   \ (zoho)
+48 / premiumize.me
+   \ (premiumizeme)
+49 / seafile
+   \ (seafile)
+Storage> 32
+
+Option client_id.
+OAuth Client Id.
+Leave blank normally.
+Enter a value. Press Enter to leave empty.
+client_id> aurelstein@knou.ac.kr
+
+Option client_secret.
+OAuth Client Secret.
+Leave blank normally.
+Enter a value. Press Enter to leave empty.
+client_secret> dlrmffn2#
+
+Option region.
+Choose national cloud region for OneDrive.
+Choose a number from below, or type in your own string value.
+Press Enter for the default (global).
+ 1 / Microsoft Cloud Global
+   \ (global)
+ 2 / Microsoft Cloud for US Government
+   \ (us)
+ 3 / Microsoft Cloud Germany
+   \ (de)
+ 4 / Azure and Office 365 operated by 21Vianet in China
+   \ (cn)
+region> 1
+
+Edit advanced config?
+y) Yes
+n) No (default)
+y/n> n
+
+Use auto config?
+ * Say Y if not sure
+ * Say N if you are working on a remote or headless machine
+
+y) Yes (default)
+n) No
+y/n> n
+
+Option config_token.
+For this to work, you will need rclone available on a machine that has
+a web browser available.
+For more help and alternate methods see: https://rclone.org/remote_setup/
+Execute the following on the machine with the web browser (same rclone
+version recommended):
+	rclone authorize "onedrive" "eyJjbGllbnRfaWQiOiJhdXJlbHN0ZWluQGtub3UuYWMua3IiLCJjbGllbnRfc2VjcmV0IjoiZGxybWZmbjIjIn0"
+Then paste the result.
+Enter a value.
+config_token> {"access_token":"eyJ0eXAiOiJKV1QiLCJub25jZSI6IlVpenNnTnh0X2tKVEQ2Tnk2QThUUHFtSkpmZVh1MkctWUU4c0pHTFFsb0UiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83NTVlNTg3Yi1lMDk4LTRiYzktOWI4OS1lYWNmNjM2MTk3MDMvIiwiaWF0IjoxNjU5MDg5MzE4LCJuYmYiOjE2NTkwODkzMTgsImV4cCI6MTY1OTA5MzgyMiwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkUyWmdZR0Q4bnlOUlkrSzk2MXpnaSsrVHRsdmZpT005SkhqYTIzMlp6dXNpbjNXdE1xb0EiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6InJjbG9uZSIsImFwcGlkIjoiYjE1NjY1ZDktZWRhNi00MDkyLTg1MzktMGVlYzM3NmFmZDU5IiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiLquYAiLCJnaXZlbl9uYW1lIjoi7IiY66-8IiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMTA2LjI0MS4yNTIuNTEiLCJuYW1lIjoi6rmA7IiY66-8Iiwib2lkIjoiZWI4MTcyY2MtZTNhMi00YTczLTkyZWQtZTUxZjFiMmE5Zjc1IiwicGxhdGYiOiIzIiwicHVpZCI6IjEwMDMwMDAwOUY2RkJEMTMiLCJyaCI6IjAuQVZNQWUxaGVkWmpneVV1YmllclBZMkdYQXdNQUFBQUFBQUFBd0FBQUFBQUFBQUJUQUhzLiIsInNjcCI6IkZpbGVzLlJlYWQgRmlsZXMuUmVhZC5BbGwgRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgU2l0ZXMuUmVhZC5BbGwgcHJvZmlsZSBvcGVuaWQgZW1haWwiLCJzdWIiOiI1N3JrTF95T1A4M2JFbjZSWmFfNVdRNm1fdHc3SmVITm5NcjFwZUZrdWprIiwidGVuYW50X3JlZ2lvbl9zY29wZSI6IkFTIiwidGlkIjoiNzU1ZTU4N2ItZTA5OC00YmM5LTliODktZWFjZjYzNjE5NzAzIiwidW5pcXVlX25hbWUiOiJhdXJlbHN0ZWluQGtub3UuYWMua3IiLCJ1cG4iOiJhdXJlbHN0ZWluQGtub3UuYWMua3IiLCJ1dGkiOiI2QUt2S3hDMngwU2lXRkhaYTFkREFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3N0Ijp7InN1YiI6InBFLUNLQ252ckVSN28zR1lyYlJpcmx6R2MtYXB3dElkNVRlREh2WWtTb1EifSwieG1zX3RjZHQiOjE0NDM0MTI0MDB9.h_ikqRnggM80P6D5F8Yaxa_dYB01ae9Q0HczwbakVa8V3JI5cA1N1mSy8AyDu5L9VQL-2HHIsdoavTjBWD6iTkPm1izEFy7yLgS3Fji_s34EFO8NqJrdpvIUOeINB4HHpKNJHI9nwMTIOylBbkZPhU5MHTDvppkyLup2qr-qAjmkeb99qAmHhLwus4WUjaibk9iheom5SuNEPRIWTWzKLUM4S02zgDxtyUT_fWLYlSCW5zuaBE63sJZFkUEsaiAZuqcz-YmzDVRPkm3E1tNXnZvN8bwMNpCmsbnJZ8BQP2bpJXSDZzG1rwugbNpZDMBdnSWR3_7UM_4t1uan0tQfPA","token_type":"Bearer","refresh_token":"0.AVMAe1hedZjgyUubierPY2GXA9llVrGm7ZJAhTkO7Ddq_VlTAHs.AgABAAEAAAD--DLA3VO7QrddgJg7WevrAgDs_wQA9P9SWxkWXAHZSjnKyrcM_72sWFVi6ujl6iyQw0ZWJ7--vdk5j_XFsglq--VCTOAc89ZFkrbrCzCim8titfGUSFiaE2n55W6GsehHC4Jn22H84IzR-R4veoA75-gni_dXDBzNSKhvz5U9-em2G9YFxdWNpVS6uUx0sdui5-TsKJE7N_U08elLFY9BMXZDKm84fgM2lR6wYj4r2ujfeBd_zSLT9x43A-N8meZnjxlNSrEV6M2qjF17t0-LdiXd6tGLb5gvfDwuxJ_b-TYblL3XfeAduR-N1wclZQetYE2aqsulNqIkEMzFTPYouRSICas0wpXNa0rdmLsoaTe3-9-vjarS7V21EoRNyesSnEfgdIDhevslL7X36WL1WK7g7w3ZcOmsx5Z8bKVH-Ga5J0c7wsywhPUTujyb1uupQt7eyGz8-OeHbLd9J2ZC8SFGcaghgXd8L4eJS4FKihghUTuY0VSHxSr2F56VzCH5heVqj78gCD4F_9VwXldDWMJWC797bjSrTdBFfRY1Sg11CYSzOAj81whtRupVfrE6K8TftPZHYMoTVcbjPW4FxJLmkdcNO6tbDjyvwsCGnF3DcpqxDlaEiKYGjlFfIwhE-MNMbmOn_et4fuokN54DocMao5TPKmK7oQA3giqYgiJ_a_EST5JdYqxuei1iwbbHQPbF2JlA-mxixqu7sa2k3MGdpgtqU8rJ5cs81-F3cygXbbEF4qJusUElBBEc_Z_xSwNMlv3DtI9WGIR0jAB6mREaf-ET9Uo","expiry":"2022-07-29T20:23:42.8702354+09:00"}
+
+Option config_type.
+Type of connection
+Choose a number from below, or type in an existing string value.
+Press Enter for the default (onedrive).
+ 1 / OneDrive Personal or Business
+   \ (onedrive)
+ 2 / Root Sharepoint site
+   \ (sharepoint)
+   / Sharepoint site name or URL
+ 3 | E.g. mysite or https://contoso.sharepoint.com/sites/mysite
+   \ (url)
+ 4 / Search for a Sharepoint site
+   \ (search)
+ 5 / Type in driveID (advanced)
+   \ (driveid)
+ 6 / Type in SiteID (advanced)
+   \ (siteid)
+   / Sharepoint server-relative path (advanced)
+ 7 | E.g. /teams/hr
+   \ (path)
+config_type> 1
+
+Option config_driveid.
+Select drive you want to use
+Choose a number from below, or type in your own string value.
+Press Enter for the default (b!RTKZEXSQ70ureJwrt1gf8vY3hZ3XURhDj-hpvwPTN6j4yvLhzcZjTotpYfgUkTKg).
+ 1 / OneDrive (business)
+   \ (b!RTKZEXSQ70ureJwrt1gf8vY3hZ3XURhDj-hpvwPTN6j4yvLhzcZjTotpYfgUkTKg)
+config_driveid> 1
+
+Drive OK?
+
+Found drive "root" of type "business"
+URL: https://knouackr-my.sharepoint.com/personal/aurelstein_knou_ac_kr/Documents
+
+y) Yes (default)
+n) No
+y/n> 1
+This value must be one of the following characters: y, n.
+y/n> y
+
+Configuration complete.
+Options:
+- type: onedrive
+- client_id: aurelstein@knou.ac.kr
+- client_secret: dlrmffn2#
+- token: {"access_token":"eyJ0eXAiOiJKV1QiLCJub25jZSI6IlVpenNnTnh0X2tKVEQ2Tnk2QThUUHFtSkpmZVh1MkctWUU4c0pHTFFsb0UiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83NTVlNTg3Yi1lMDk4LTRiYzktOWI4OS1lYWNmNjM2MTk3MDMvIiwiaWF0IjoxNjU5MDg5MzE4LCJuYmYiOjE2NTkwODkzMTgsImV4cCI6MTY1OTA5MzgyMiwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkUyWmdZR0Q4bnlOUlkrSzk2MXpnaSsrVHRsdmZpT005SkhqYTIzMlp6dXNpbjNXdE1xb0EiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6InJjbG9uZSIsImFwcGlkIjoiYjE1NjY1ZDktZWRhNi00MDkyLTg1MzktMGVlYzM3NmFmZDU5IiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiLquYAiLCJnaXZlbl9uYW1lIjoi7IiY66-8IiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMTA2LjI0MS4yNTIuNTEiLCJuYW1lIjoi6rmA7IiY66-8Iiwib2lkIjoiZWI4MTcyY2MtZTNhMi00YTczLTkyZWQtZTUxZjFiMmE5Zjc1IiwicGxhdGYiOiIzIiwicHVpZCI6IjEwMDMwMDAwOUY2RkJEMTMiLCJyaCI6IjAuQVZNQWUxaGVkWmpneVV1YmllclBZMkdYQXdNQUFBQUFBQUFBd0FBQUFBQUFBQUJUQUhzLiIsInNjcCI6IkZpbGVzLlJlYWQgRmlsZXMuUmVhZC5BbGwgRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgU2l0ZXMuUmVhZC5BbGwgcHJvZmlsZSBvcGVuaWQgZW1haWwiLCJzdWIiOiI1N3JrTF95T1A4M2JFbjZSWmFfNVdRNm1fdHc3SmVITm5NcjFwZUZrdWprIiwidGVuYW50X3JlZ2lvbl9zY29wZSI6IkFTIiwidGlkIjoiNzU1ZTU4N2ItZTA5OC00YmM5LTliODktZWFjZjYzNjE5NzAzIiwidW5pcXVlX25hbWUiOiJhdXJlbHN0ZWluQGtub3UuYWMua3IiLCJ1cG4iOiJhdXJlbHN0ZWluQGtub3UuYWMua3IiLCJ1dGkiOiI2QUt2S3hDMngwU2lXRkhaYTFkREFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3N0Ijp7InN1YiI6InBFLUNLQ252ckVSN28zR1lyYlJpcmx6R2MtYXB3dElkNVRlREh2WWtTb1EifSwieG1zX3RjZHQiOjE0NDM0MTI0MDB9.h_ikqRnggM80P6D5F8Yaxa_dYB01ae9Q0HczwbakVa8V3JI5cA1N1mSy8AyDu5L9VQL-2HHIsdoavTjBWD6iTkPm1izEFy7yLgS3Fji_s34EFO8NqJrdpvIUOeINB4HHpKNJHI9nwMTIOylBbkZPhU5MHTDvppkyLup2qr-qAjmkeb99qAmHhLwus4WUjaibk9iheom5SuNEPRIWTWzKLUM4S02zgDxtyUT_fWLYlSCW5zuaBE63sJZFkUEsaiAZuqcz-YmzDVRPkm3E1tNXnZvN8bwMNpCmsbnJZ8BQP2bpJXSDZzG1rwugbNpZDMBdnSWR3_7UM_4t1uan0tQfPA","token_type":"Bearer","refresh_token":"0.AVMAe1hedZjgyUubierPY2GXA9llVrGm7ZJAhTkO7Ddq_VlTAHs.AgABAAEAAAD--DLA3VO7QrddgJg7WevrAgDs_wQA9P9SWxkWXAHZSjnKyrcM_72sWFVi6ujl6iyQw0ZWJ7--vdk5j_XFsglq--VCTOAc89ZFkrbrCzCim8titfGUSFiaE2n55W6GsehHC4Jn22H84IzR-R4veoA75-gni_dXDBzNSKhvz5U9-em2G9YFxdWNpVS6uUx0sdui5-TsKJE7N_U08elLFY9BMXZDKm84fgM2lR6wYj4r2ujfeBd_zSLT9x43A-N8meZnjxlNSrEV6M2qjF17t0-LdiXd6tGLb5gvfDwuxJ_b-TYblL3XfeAduR-N1wclZQetYE2aqsulNqIkEMzFTPYouRSICas0wpXNa0rdmLsoaTe3-9-vjarS7V21EoRNyesSnEfgdIDhevslL7X36WL1WK7g7w3ZcOmsx5Z8bKVH-Ga5J0c7wsywhPUTujyb1uupQt7eyGz8-OeHbLd9J2ZC8SFGcaghgXd8L4eJS4FKihghUTuY0VSHxSr2F56VzCH5heVqj78gCD4F_9VwXldDWMJWC797bjSrTdBFfRY1Sg11CYSzOAj81whtRupVfrE6K8TftPZHYMoTVcbjPW4FxJLmkdcNO6tbDjyvwsCGnF3DcpqxDlaEiKYGjlFfIwhE-MNMbmOn_et4fuokN54DocMao5TPKmK7oQA3giqYgiJ_a_EST5JdYqxuei1iwbbHQPbF2JlA-mxixqu7sa2k3MGdpgtqU8rJ5cs81-F3cygXbbEF4qJusUElBBEc_Z_xSwNMlv3DtI9WGIR0jAB6mREaf-ET9Uo","expiry":"2022-07-29T20:23:42.8702354+09:00"}
+- drive_id: b!RTKZEXSQ70ureJwrt1gf8vY3hZ3XURhDj-hpvwPTN6j4yvLhzcZjTotpYfgUkTKg
+- drive_type: business
+Keep this "onedrive" remote?
+y) Yes this is OK (default)
+e) Edit this remote
+d) Delete this remote
+y/e/d> y
+
+Current remotes:
+
+Name                 Type
+====                 ====
+onedrive             onedrive
+
+e) Edit existing remote
+n) New remote
+d) Delete remote
+r) Rename remote
+c) Copy remote
+s) Set configuration password
+q) Quit config
+e/n/d/r/c/s/q> q
+
+
+!rm -rf '/content/onedrive' && rm 'nohup.out'
+!sudo mkdir /content/onedrive
+!nohup rclone --vfs-cache-mode full mount onedrive: /content/onedrive &
+
+!sudo mkdir /content/onedrive
+!nohup rclone --vfs-cache-mode writes mount onedrive: /content/onedrive &

@@ -1,0 +1,10 @@
+pad_x1은 넘파이 y는 판다스 각각 2차
+
+y = np.array(y)
+y = y.reshape(-1,1)
+data = np.hstack([pad_x1,y])
+넘파이로
+
+pad_x1 = pd.DataFrame(pad_x1)
+df = pd.concat([pad-x1,y], axis=1)
+판다스로

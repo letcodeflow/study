@@ -1,0 +1,89 @@
+# from file load and ima save, then load, model and evaluate
+from keras.preprocessing.image import ImageDataGenerator
+import numpy as np
+gen1 = ImageDataGenerator(
+    rescale=1./255
+)
+gen2 = ImageDataGenerator(
+    rescale=1./255,
+    horizontal_flip=True,
+    vertical_flip=True,
+    shear_range=0.2,
+    rotation_range=5,
+    fill_mode='nearest',
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    zoom_range=0.1
+    
+)
+
+augu = 200
+xy_train = gen1.flow_from_directory(
+    'd:/study_data/_data/image/brain/train/',
+    color_mode='grayscale',
+    class_mode='binary',
+    target_size=(100,100),
+    batch_size=augu,
+    shuffle=True,
+    save_to_dir='d:/study_data/_temp/brain/train/',
+)
+xy_test = gen1.flow_from_directory(
+    'd:/study_data/_data/image/brain/test/',
+    color_mode='grayscale',
+    class_mode='binary',
+    target_size=(100,100),
+    batch_size=augu,
+    shuffle=True,
+    save_to_dir='d:/study_data/_temp/brain/test/',
+)
+
+x_train = xy_train[0][0] 
+y_train = xy_train[0][1] 
+x_test = xy_test[0][0]
+y_test = xy_test[0][1]
+
+randix = np.random.randint(x_train.shape[0],size = augu)
+print(np.min(randix), np.max(randix))
+x_augu = x_train[randix].copy()
+y_augu = y_train[randix].copy()
+
+x_augu = gen2.flow(x_augu, y_augu,batch_size=augu,shuffle=False).next()[0]
+
+
+
+
+
+#증폭
+                
+print(x_augu)
+print(x_train.shape,y_train.shape,x_augu.shape,y_augu.shape)
+x_train = np.concatenate((x_train, x_augu))
+y_train = np.concatenate((y_train, y_augu))
+print(x_train.shape,y_train.shape,x_augu.shape,y_augu.shape)
+
+np.save('d:/study_data/_save/_npy/brain/keras48_brain_x_train.npy', arr = x_train)
+np.save('d:/study_data/_save/_npy/brain/keras48_brain_y_train.npy', arr = y_train)
+np.save('d:/study_data/_save/_npy/brain/keras48_brain_x_test.npy', arr = x_test)
+np.save('d:/study_data/_save/_npy/brain/keras48_brain_y_test.npy', arr = y_test)
+
+
+
+
+
+
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(2,10))
+for i in range(20):
+    if i <= 9:
+        plt.subplot(2,10,i+1)
+        plt.axis('off')
+        plt.imshow(x_augu[randix[i]], cmap='gray')
+    else: 
+        plt.subplot(2,10,i+1)
+        plt.axis('off')
+        plt.imshow(x_train[randix[i-10]], cmap='gray')   
+plt.show()
+
+ 
+

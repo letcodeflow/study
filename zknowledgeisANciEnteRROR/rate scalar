@@ -1,0 +1,3 @@
+    ValueError: `rate` must be a scalar or scalar tensor. Received: rate=<class 'tensorflow.python.keras.layers.core.Dropout'>
+
+    dropout에 0.3 소수를 주지 않은 문제

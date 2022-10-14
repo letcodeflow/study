@@ -1,0 +1,4 @@
+# predict = model.best_estimator_.predict(x_test)
+# TypeError: get_params() missing 1 required positional argument: 'self'
+
+클래스파이어에 ()가 없었음

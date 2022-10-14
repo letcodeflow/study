@@ -1,0 +1,3 @@
+test_set=test_set.fillna(train_set.mean())
+test_set=test_set.fillna(0)
+test_set=test_set.dropna()

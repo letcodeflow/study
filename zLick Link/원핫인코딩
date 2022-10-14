@@ -1,0 +1,153 @@
+https://growthj.link/python-%EC%9B%90-%ED%95%AB-%EC%9D%B8%EC%BD%94%EB%94%A9one-hot-encoding-%EC%A0%95%EB%A6%AC-get_dummies/
+
+
+to categorical 은 무조건 0부터 시작하기 때문에 라벨값이 1부터일경우 0, 3부터 시작할경우 0 1 2 를 생성한다
+해당하는 데이터전처리가 있다
+겟더미와 skleanr은 그냥 숫자만큼만 컬럼을 나눠준다
+즉 판다스의 겟더미가 하는 일은 해당 컬럼의 라벨종류별로 숫자를 지정해(아마도 랜덤?) 숫자만큼 컬럼을 만들고 해당하는 라벨컬럼만 True값 즉 1을 주고 나머지는 False = 0값을 주는 array를 만든다
+ 
+
+https://mizykk.tistory.com/13
+
+
+
+### 이  값은 이산적이므로 연속형 변수로 다루면 안된다는 것이 명확해짐
+
+https://nicola-ml.tistory.com/62
+
+데이터 전처리 즉 label encoder를 통해 카테고리를 숫자화 하고
+이를 열이 없는 행렬 즉 (-1,1)의 값으로 바꾸고 onehotencoder에 넣으면
+해당 숫자(라벨)마다 컬럼을 생성해 해당하는 칼럼의 행값만 True 나머지는 False값을 만들어준다
+
+sklean 원핫인코딩은 array 정렬하고 다시 정렬해주고
+getdummies는 argmax를 tessorflow로 바꿔주면 돌아간다
+tensor tocategorical 은 열을 자동으로 생성하므로 인수에 -1을 붙여준다
+
+#3가지의 원핫인코딩 방법 비교
+from sklearn.preprocessing import OneHotEncoder
+
+
+get dummie pandas
+
+tensorflow to categorical
+
+sklearn OneHotEncoder
+
+15 covtype 할때 to categorical 로 하면 오류난다 다른 두방식은 ㅇㅋ?
+
+
+ 원핫인코더의 좋은 점은 Ordinal 변수도 모두 범주형으로 인식하여 처리한다는 점이다.
+ 
+ data type은 categorical 명목형과 numerical 순위형으로 나뉜다
+ 
+ 명목형 categorical은 nominal ordinal 로 나뉜다
+ 
+numerical은 interval 과 ratio로 나뉜다
+
+from sklearn.preprocessing import OneHotEncoder
+​
+ohe = OneHotEncoder()
+#불러오기
+OneHotEncoder문자열 값을 직접 처리 할 수 ​​없습니다. 명목 특징이 문자열 인 경우 먼저 정수로 매핑해야합니다.
+pandas.get_dummies그 반대입니다. 기본적으로 열을 지정하지 않는 한 문자열 열만 원-핫 표현으로 변환합니다.
+ 
+ 
+ 문자를 숫자로 바꾸어 주는 방법 중 하나로 One-Hot Encoding이 있다. 
+
+가변수(dummy variable)로 만들어주는 것인데, 이는 0과 1로 이루어진 열을 나타낸다.
+
+1은 있다, 0은 없다를 나타낸다.
+[출처] [pandas] pd.get_dummies() :: One-Hot Encoding/원핫인코딩|작성자 밎이
+
+
+to categorical 은 무조건 0부터 시작하기 때문에 라벨값이 1부터일경우 0, 3부터 시작할경우 0 1 2 를 생성한다
+해당하는 데이터전처리가 있다
+겟더미와 skleanr은 그냥 숫자만큼만 컬럼을 나눠준다
+즉 판다스의 겟더미가 하는 일은 해당 컬럼의 라벨종류별로 숫자를 지정해(아마도 랜덤?) 숫자만큼 컬럼을 만들고 해당하는 라벨컬럼만 True값 즉 1을 주고 나머지는 False = 0값을 주는 array를 만든다
+ 
+ 
+
+
+ import pandas as pd
+
+data =pd.DataFrame(pd.Series(['good','bad','worst','good', 'good', 'bad']))
+print(data)
+# new_data has two values that data does not have. 
+new_data= pd.DataFrame(pd.Series(['good','bad','worst','good', 'good', 'bad','excellent', 'perfect']))
+print(new_data)
+
+#        0
+# 0   good
+# 1    bad
+# 2  worst
+# 3   good
+# 4   good
+# 5    bad
+#            0
+# 0       good
+# 1        bad
+# 2      worst
+# 3       good
+# 4       good
+# 5        bad
+# 6  excellent
+# 7    perfect
+
+df = pd.get_dummies(data)
+print(df)
+col_list = df.columns.tolist()
+print(df)
+
+new_df = pd.get_dummies(new_data)
+print(new_data)
+# handle unknow by using .reindex and .fillna()
+new_df = new_df.reindex(columns=col_list).fillna(0.00)
+print(new_df)
+
+from sklearn.preprocessing import OneHotEncoder
+encoder = OneHotEncoder(handle_unknown="ignore", sparse=False)
+encoder.fit(data)
+encoder.transform(new_data)
+
+print(data)
+print(new_data)
+
+to categorical 은 무조건 0부터 시작하기 때문에 라벨값이 1부터일경우 0, 3부터 시작할경우 0 1 2 를 생성한다
+해당하는 데이터전처리가 있다
+겟더미와 skleanr은 그냥 숫자만큼만 컬럼을 나눠준다
+그전에 라벨인코더로 문자를 숫자로 바꿔줘야하는데 겟더미는 랜덤으로 해준다
+즉 판다스의 겟더미가 하는 일은 해당 컬럼의 라벨종류별로 숫자를 지정해(아마도 랜덤?) 숫자만큼 컬럼을 만들고 해당하는 라벨컬럼만 True값 즉 1을 주고 나머지는 False = 0값을 주는 array를 만든다
+ 
+ One-Hot Encoding은 언제?
+
+ 
+
+순서가 없을 때 (예, 국가명 )
+그리고 고유값의 개수가 많지 않으면 효율적
+ 
+
+Label Encoding은 언제?
+
+ 
+
+순서의 의미가 있을때 (유치원, 초등학교, 대학교 같은 등급, 사원, 대리, 과장, 부장 같은 직급?? )
+ 고유값의 개수가 많은데 One-hot Encoding은 당연히 메모리 소비가 많으므로 효율적이진 못하다. 
+ 
+ 겟더미는 고유값에 nan값이 있을겨우 칼럼을 생성하지 않는다
+ https://psystat.tistory.com/136
+ 
+ As we can see, we missed the column AgeGroup_45-65 and we got a new one column, the AgeGroup_65+. But we want to feed our model with the same columns of the train dataset. The trick is to use the reindex function.
+
+1
+2
+3
+X_test = X_test.reindex(columns = X_train.columns, fill_value=0)
+ 
+X_test
+
+결측값 처리
+
+pd.get_dummies(fruit['name'], dummy_na = True)
+[출처] [pandas] pd.get_dummies() :: One-Hot Encoding/원핫인코딩|작성자 밎이
+
+https://truman.tistory.com/189

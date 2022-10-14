@@ -1,0 +1,56 @@
+#1. 데이터
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split,cross_val_score,KFold,cross_val_predict,GridSearchCV,RandomizedSearchCV
+from sklearn.metrics import r2_score, mean_squared_error
+import warnings
+from sklearn.metrics import r2_score
+from bayes_opt import BayesianOptimization
+from sklearn.model_selection import GridSearchCV,KFold,StratifiedKFold,train_test_split
+
+from xgboost import XGBRegressor
+warnings.filterwarnings('ignore')
+pd.__version__
+path202 = 'C:/Users/aia200/OneDrive - 한국방송통신대학교/beat/study/_data/ddareunge/'
+path184 = 'C:/Users/aiapalm/OneDrive - KNOU/beat/study/_data/ddareunge/'
+train_set = pd.read_csv(path184 + 'train.csv', index_col=0)
+test_set = pd.read_csv(path184 + 'test.csv', index_col=0)
+
+
+train_set = train_set.fillna(0) # 결측치 0으로 채움
+
+x_data = train_set.drop(['count'], axis=1)
+y_data = train_set['count'].values.reshape(-1,1)
+x_train, x_test, y_train, y_test = train_test_split(x_data,y_data,train_size=0.8,random_state=234)
+# print(x.shape,y.shape,type(y))
+import tensorflow as tf
+x = tf.placeholder(tf.float32,shape=[None,9])
+w = tf.Variable(tf.random_normal([9,1]))
+b = tf.Variable(tf.random_normal([1,1]))
+y = tf.placeholder(tf.float32,shape=[None,1])
+
+hypothesis = x@w+b
+loss = tf.reduce_mean(tf.square(hypothesis-y))
+train = tf.train.GradientDescentOptimizer(learning_rate=0.0001).minimize(loss)
+
+with tf.compat.v1.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    for i in range(201):
+        h_val = sess.run(hypothesis, feed_dict = {x:x_train,y:y_train})
+        if i % 20 == 0:
+            print(i, h_val)
+    pred = sess.run(hypothesis, feed_dict = {x:x_test})
+    print(r2_score(y_test,pred))
+# grid pip minmax rf
+# 449.3287799358368
+# 0.7949992976721303
+
+# bagging pipe minmax rf
+# 42.9849910736084
+# 0.7283589459430098
+
+# polinomial 
+# 0.7371160648898719
+
+# xgb bo
+# target': 0.788425270980499

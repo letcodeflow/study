@@ -1,0 +1,89 @@
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.model_selection import train_test_split
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score
+from bayes_opt import BayesianOptimization
+from xgboost import XGBClassifier
+#1. 데이터
+datasets = load_iris()
+x_data = datasets.data
+y_data = datasets.target
+y_data = y_data.reshape(-1,1)
+# print(y)
+from sklearn.preprocessing import OneHotEncoder
+ohe = OneHotEncoder()
+y_data = ohe.fit_transform(y_data).toarray()
+
+x_train, x_test, y_train, y_test = train_test_split(x_data,y_data,train_size=0.8,random_state=234)
+print(x_train.shape, y_train.shape)
+import tensorflow as tf
+# x_train = tf.cast(x_train,tf.float32)
+x = tf.placeholder(tf.float32,shape=[None,4])
+w = tf.Variable(tf.random_normal([4,3]))
+b = tf.Variable(tf.random_normal([1,3]))
+y = tf.placeholder(tf.float32,shape=[None,3])
+
+hypothesis = tf.nn.softmax(tf.matmul(x,w)+b)
+loss = tf.reduce_mean(-tf.reduce_sum(y*tf.log(hypothesis), axis=1))
+train = tf.train.GradientDescentOptimizer(learning_rate=0.0001).minimize(loss)
+with tf.compat.v1.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    for i in range(201):
+        h_val,loss_val,_ = sess.run([hypothesis,loss,train],feed_dict={x:x_train,y:y_train})
+        if i % 20 == 0:
+            print(i, h_val, loss_val)
+    
+    y_test = np.argmax(y_test,axis=1)
+    from sklearn.metrics import accuracy_score
+    pred = sess.run(hypothesis,feed_dict={x:x_test})
+    pred = np.argmax(pred,axis=1)
+    acc = accuracy_score(y_test,pred)
+    print(acc)
+# print(datasets)
+
+
+# xxgboost
+# 시간 7.320397138595581
+# 결과 0.8953985697443267
+
+# no pca
+# 시간 5.952320337295532
+# 결과 0.8683166527542319
+
+# pca 18
+# 시간 4.731928825378418
+# 결과 0.8846587437501614
+
+# lda 
+# 시간 3.589005708694458
+# 결과 0.7874581551250829
+
+# lda compo 2
+# 시간 0.7507467269897461
+# 결과 1.0
+
+# pca 2
+# 시간 0.4982614517211914
+# 결과 0.8666666666666667
+
+# no pca lda
+# 시간 0.5761358737945557
+# 결과 0.9333333333333333
+
+# bagging XGBClassifier
+# 시간 9.621065139770508
+# 결과 0.9333333333333333
+
+# voting
+# LogisticRegression 정확도: 0.9333
+# KNeighborsClassifier 정확도: 0.8667
+# XGBClassifier 정확도: 0.9333
+# LGBMClassifier 정확도: 0.9333
+# CatBoostClassifier 정확도: 0.9333
+
+# xgb bo
+# target': 1.0
