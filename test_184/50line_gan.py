@@ -27,7 +27,7 @@ d_optimizer = torch.optim.Adam(D.parameters(), 0.0002)
 # a,x  = np.array( i, images for i, images in data_loader)
 """Train generator and discriminator."""
 fixed_noise = Variable(torch.randn(10, 128))  # For Testing
-# print(fixed_noise.shape)
+print(fixed_noise.shape)
 for epoch in range(200):
     for i, images in enumerate(data_loader):
         # ===================== Train D =====================#
