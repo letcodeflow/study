@@ -11,10 +11,10 @@ from keras.models import Model, load_model
 from keras.utils.np_utils import to_categorical
 from keras.layers import Input, Dense, LSTM, Embedding, Dropout, add
 
-BASE_DIR = 'C:/Users/aiapalm/OneDrive - KNOU/study/testint/flickr8k/'
-WORKING_DIR = 'C:/Users/aiapalm/OneDrive - KNOU/study/testint/flickr8k/result'
+BASE_DIR = 'D:/OneDrive - 한국방송통신대학교/data/flickr30k'
+WORKING_DIR = 'D:/OneDrive - 한국방송통신대학교/data/flickr30k/working'
 
-
+""" 
 # load vgg16 model
 model = VGG16()
 # restructure the model
@@ -24,7 +24,7 @@ model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
 
 # extract features from image
 features = {}
-directory = os.path.join(BASE_DIR, 'Images')
+directory = ('D:/OneDrive - 한국방송통신대학교/data/flickr30k/Images')
 
 for img_name in tqdm(os.listdir(directory)):
     # load the image from file
@@ -50,15 +50,15 @@ for img_name in tqdm(os.listdir(directory)):
 # print(features)
 
 # store features in pickle
-pickle.dump(features, open(os.path.join(WORKING_DIR, 'features.pkl'), 'wb'))
+pickle.dump(features, open(os.path.join(WORKING_DIR, 'features_vgg16.pkl'), 'wb'))
 print('img processing done.')
-
+ """
 # load features from pickle
-with open(os.path.join(WORKING_DIR, 'features.pkl'), 'rb') as f:
+with open(os.path.join(WORKING_DIR, 'features_vgg16.pkl'), 'rb') as f:
     features = pickle.load(f)
     
     
-with open(os.path.join(BASE_DIR, 'captions.txt'), 'r') as f:
+with open(os.path.join(BASE_DIR, 'captions.txt'), 'r', encoding='UTF8') as f:
     next(f) # 첫줄 빼고 읽어오기
     captions_doc = f.read()
 # print(captions_doc)
@@ -114,13 +114,13 @@ def clean(mapping): # 맵핑 딕셔너리 안의 caption을 전처리
             
 
 # before preprocess of text
-print('bf_text:', mapping['1000268201_693b08cb0e'])
+print('bf_text:', mapping['36979'])
 
 # preprocess the text
 clean(mapping)
 
 # after preprocess of text
-print('af_text:', mapping['1000268201_693b08cb0e'])
+print('af_text:', mapping['36979'])
 
 
 # 딕셔너리에서 캡션만 뽑아오기
@@ -149,8 +149,8 @@ print('max_len:', max_length)
 
 image_ids = list(mapping.keys())
 split = int(len(image_ids) * 0.90) # train_test_split
-train = image_ids[:] # 안함
-# test = image_ids[split:]
+train = image_ids[:split] # 안함
+test = image_ids[split:]
 
 # <start> girl going into wooden building end
 #        X                   y
@@ -232,7 +232,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam')
 
 # train the model
 print('start training...')
-epochs = 2
+epochs = 30
 batch_size = 32
 steps = len(train) // batch_size # 1 batch 당 훈련하는 데이터 수
 # len(train): 8091 / steps: 252
@@ -248,7 +248,7 @@ for i in range(epochs):
 print('done training.')
 
 # save the model
-model.save(WORKING_DIR+'/best_model.h5')
+model.save(WORKING_DIR+'/best_model_vgg16.h5')
 
 def idx_to_word(integer, tokenizer):
     for word, index in tokenizer.word_index.items():
@@ -284,7 +284,7 @@ def predict_caption(model, image, tokenizer, max_length): # 여기서 image 자�
       
     return in_text
 
-''' bleu score
+#  bleu score
 from nltk.translate.bleu_score import corpus_bleu
 # validate with test data
 actual, predicted = list(), list()
@@ -324,7 +324,7 @@ def generate_caption(image_name):
     print(y_pred)
     plt.imshow(image)
     plt.show()
-'''
+
 
 image = load_img('C:/Users/aiapalm/Downloads/v_1.jpg', target_size=(224, 224))
 # convert image pixels to numpy array
@@ -338,7 +338,7 @@ model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
 predic_features = model.predict(image, verbose=1)
 
 print('prediction..')
-model = load_model(WORKING_DIR+'/best_model.h5')
+model = load_model(WORKING_DIR+'/best_model_vgg16.h5')
 y_pred = predict_caption(model, predic_features, tokenizer, max_length)
 y_pred = y_pred.replace('start', '')
 y_pred = y_pred.replace('end', '')
