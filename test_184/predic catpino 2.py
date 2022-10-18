@@ -13,20 +13,17 @@ from keras.layers import Input, Dense, LSTM, Embedding, Dropout, add
 
 BASE_DIR = 'D:/OneDrive - 한국방송통신대학교/data/flickr30k'
 WORKING_DIR = 'D:/OneDrive - 한국방송통신대학교/data/flickr30k/working'
-
-""" 
-# load vgg16 model
-model = VGG16()
+  # load vgg16 model
+""" model = VGG16()
 # restructure the model
-model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
+model = Model(inputs=model.inputs, outputs=model.layers[-2].output) """
 # summarize
 # model.summary()
 
 # extract features from image
 features = {}
 directory = ('D:/OneDrive - 한국방송통신대학교/data/flickr30k/Images')
-
-for img_name in tqdm(os.listdir(directory)):
+""" for img_name in tqdm(os.listdir(directory)):
     # load the image from file
     img_path = directory + '/' + img_name
     image = load_img(img_path, target_size=(224, 224))
@@ -45,14 +42,14 @@ for img_name in tqdm(os.listdir(directory)):
     # get image ID
     image_id = img_name.split('.')[0]
     # store feature
-    features[image_id] = feature
-    
+    features[image_id] = feature """
+
 # print(features)
 
 # store features in pickle
-pickle.dump(features, open(os.path.join(WORKING_DIR, 'features_vgg16.pkl'), 'wb'))
-print('img processing done.')
- """
+""" pickle.dump(features, open(os.path.join(WORKING_DIR, 'features_vgg16.pkl'), 'wb'))
+print('img processing done.')  """
+
 # load features from pickle
 with open(os.path.join(WORKING_DIR, 'features_vgg16.pkl'), 'rb') as f:
     features = pickle.load(f)
@@ -87,7 +84,7 @@ for line in tqdm(captions_doc.split('\n')):
     # store the caption
     mapping[image_id].append(caption) # 만든 자리에 현재 캡션 넣음
                                       # 해당 이미지 id가 이미 있으면 그 자리에 넣음
-                                      # 한 이미지당 5개이므로 다음 이미지 아이디가 들어오기 전까지 한자리에 넣음
+                                      # 한 이미지당 5개이므로 다음 이미지 아이디가 들어오기 전까지 한자리에 넣음 """
 
 
 print(len(mapping))
@@ -106,7 +103,7 @@ def clean(mapping): # 맵핑 딕셔너리 안의 caption을 전처리
             # delete additional spaces
             caption = caption.replace('\s+', ' ') # [ \t\n\r\f\v] 가 1번 이상 나오면 공백으로 변경
             # add start and end tags to the caption
-            caption = 'start ' + " ".join([word for word in caption.split()]) + ' end'
+            caption = 'startseq ' + " ".join([word for word in caption.split() if len(word)>1]) + ' endseq'
             # 스페이스 기준 잘라서 넣기
             '''a child is standing on her head .
             start a child is standing on her head end .'''
@@ -232,24 +229,24 @@ model.compile(loss='categorical_crossentropy', optimizer='adam')
 
 # train the model
 print('start training...')
-epochs = 30
+epochs = 40
 batch_size = 32
 steps = len(train) // batch_size # 1 batch 당 훈련하는 데이터 수
 # len(train): 8091 / steps: 252
 # 제너레이터 함수에서 yield로 252개의 [X1, X2], y 묶음이 차곡차곡 쌓여 있고  steps_per_epoch=steps 이 옵션으로
 # epoch 1번짜리 fit을 돌때 252번(정해준steps번) generator 를 호출함. iterating 을 steps번 함
+# for i in range(epochs):
+#     print(f'epoch: {i+1}')
+#     # create data generator
+#     generator = data_generator(train, mapping, features, tokenizer, max_length, vocab_size, batch_size)
+#     # fit for one epoch
+#     model.fit(generator, epochs=1, steps_per_epoch=steps, verbose=1) # generator -> [X1, X2], y
+# print('done training.')
 
-for i in range(epochs):
-    print(f'epoch: {i+1}')
-    # create data generator
-    generator = data_generator(train, mapping, features, tokenizer, max_length, vocab_size, batch_size)
-    # fit for one epoch
-    model.fit(generator, epochs=1, steps_per_epoch=steps, verbose=1) # generator -> [X1, X2], y
-print('done training.')
+# # save the model
+# model.save(WORKING_DIR+'/best_model_vgg16.h5')
 
-# save the model
-model.save(WORKING_DIR+'/best_model_vgg16.h5')
-
+# model = load_model(WORKING_DIR+'/best_model_vgg16.h5')
 def idx_to_word(integer, tokenizer):
     for word, index in tokenizer.word_index.items():
         if index == integer:
@@ -260,7 +257,7 @@ def idx_to_word(integer, tokenizer):
 # generate caption for an image
 def predict_caption(model, image, tokenizer, max_length): # 여기서 image 자리는 vgg 통과해 나온 feature의 자리임
     # add start tag for generation process
-    in_text = 'start' # 빈 문장 생성
+    in_text = 'startseq' # 빈 문장 생성
     # iterate over the max length of sequence
     for i in range(max_length):
         # encode input sequence
@@ -279,54 +276,53 @@ def predict_caption(model, image, tokenizer, max_length): # 여기서 image 자�
         # append word as input for generating next word
         in_text += " " + word
         # stop if we reach end tag
-        if word == 'end':
+        if word == 'endseq':
             break
       
     return in_text
 
 #  bleu score
-from nltk.translate.bleu_score import corpus_bleu
-# validate with test data
-actual, predicted = list(), list()
-
-for key in tqdm(test):
-    # get actual caption
-    captions = mapping[key]
-    # predict the caption for image
-    y_pred = predict_caption(model, features[key], tokenizer, max_length) 
-    # split into words
-    actual_captions = [caption.split() for caption in captions]
-    y_pred = y_pred.split()
-    # append to the list
-    actual.append(actual_captions)
-    predicted.append(y_pred)
+# from nltk.translate.bleu_score import corpus_bleu
+# # validate with test data
+# actual, predicted = list(), list()
+# for key in tqdm(test):
+#     # get actual caption
+#     captions = mapping[key]
+#     # predict the caption for image
+#     y_pred = predict_caption(model, features[key], tokenizer, max_length) 
+#     # split into words
+#     actual_captions = [caption.split() for caption in captions]
+#     y_pred = y_pred.split()
+#     # append to the list
+#     actual.append(actual_captions)
+#     predicted.append(y_pred)
     
-# calcuate BLEU score
-print("BLEU-1: %f" % corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))        # 1-gram 만 뽑음
-print("BLEU-2: %f" % corpus_bleu(actual, predicted, weights=(0.5, 0.5, 0, 0)))      # 1-gram 과 2-gram 만 뽑되 각각 같은 가중치를 두고 뽑음
+# # calcuate BLEU score
+# print("BLEU-1: %f" % corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))        # 1-gram 만 뽑음
+# print("BLEU-2: %f" % corpus_bleu(actual, predicted, weights=(0.5, 0.5, 0, 0)))      # 1-gram 과 2-gram 만 뽑되 각각 같은 가중치를 두고 뽑음
 
 
-from PIL import Image
-import matplotlib.pyplot as plt
-def generate_caption(image_name):
-    # load the image
-    # image_name = "1001773457_577c3a7d70.jpg"
-    image_id = image_name.split('.')[0]
-    img_path = os.path.join(BASE_DIR, "Images", image_name)
-    image = Image.open(img_path)
-    captions = mapping[image_id]
-    print('---------------------Actual---------------------')
-    for caption in captions:
-        print(caption)
-    # predict the caption
-    y_pred = predict_caption(model, features[image_id], tokenizer, max_length)
-    print('--------------------Predicted--------------------')
-    print(y_pred)
-    plt.imshow(image)
-    plt.show()
+# from PIL import Image
+# import matplotlib.pyplot as plt
+# def generate_caption(image_name):
+#     # load the image
+#     # image_name = "1001773457_577c3a7d70.jpg"
+#     image_id = image_name.split('.')[0]
+#     img_path = os.path.join(BASE_DIR, "Images", image_name)
+#     image = Image.open(img_path)
+#     captions = mapping[image_id]
+#     print('---------------------Actual---------------------')
+#     for caption in captions:
+#         print(caption)
+#     # predict the caption
+#     y_pred = predict_caption(model, features[image_id], tokenizer, max_length)
+#     print('--------------------Predicted--------------------')
+#     print(y_pred)
+#     plt.imshow(image)
+#     plt.show()
 
 
-image = load_img('C:/Users/aiapalm/Downloads/v_1.jpg', target_size=(224, 224))
+image = load_img('D:/OneDrive - 한국방송통신대학교/data/custom_sample/KakaoTalk_20221004_195441790.jpg', target_size=(224, 224))
 # convert image pixels to numpy array
 image = img_to_array(image)
 # reshape data for model
