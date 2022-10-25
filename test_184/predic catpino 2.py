@@ -215,16 +215,17 @@ fe2 = Dense(256, activation='relu')(fe1)
 # sequence feature layers
 inputs2 = Input(shape=(max_length,))
 se1 = Embedding(vocab_size, 256, mask_zero=True)(inputs2)
-se2 = Dropout(0.4)(se1)
-se3 = LSTM(256)(se2)
+se2 = Dense(256, activation='relu')(se1)
+se3 = Dropout(0.4)(se1)
 
 # decoder model
 decoder1 = add([fe2, se3])
-decoder2 = Dense(256, activation='relu')(decoder1)
-outputs = Dense(vocab_size, activation='softmax')(decoder2)
+decoder2 = LSTM(128)(decoder1)
+decoder3 = Dense(256, activation='relu')(decoder2)
+outputs = Dense(vocab_size, activation='softmax')(decoder3)
 
 model = Model(inputs=[inputs1, inputs2], outputs=outputs)
-model.compile(loss='categorical_crossentropy', optimizer='adam')
+# model.compile(loss='categorical_crossentropy', optimizer='adam')
 
 
 # train the model
@@ -235,15 +236,15 @@ steps = len(train) // batch_size # 1 batch 당 훈련하는 데이터 수
 # len(train): 8091 / steps: 252
 # 제너레이터 함수에서 yield로 252개의 [X1, X2], y 묶음이 차곡차곡 쌓여 있고  steps_per_epoch=steps 이 옵션으로
 # epoch 1번짜리 fit을 돌때 252번(정해준steps번) generator 를 호출함. iterating 을 steps번 함
-# for i in range(epochs):
-#     print(f'epoch: {i+1}')
-#     # create data generator
-#     generator = data_generator(train, mapping, features, tokenizer, max_length, vocab_size, batch_size)
-#     # fit for one epoch
-#     model.fit(generator, epochs=1, steps_per_epoch=steps, verbose=1) # generator -> [X1, X2], y
-# print('done training.')
+""" for i in range(epochs):
+    print(f'epoch: {i+1}')
+    # create data generator
+    generator = data_generator(train, mapping, features, tokenizer, max_length, vocab_size, batch_size)
+    # fit for one epoch
+    model.fit(generator, epochs=1, steps_per_epoch=steps, verbose=1) # generator -> [X1, X2], y
+print('done training.') """
 
-# # save the model
+# save the model
 # model.save(WORKING_DIR+'/best_model_vgg16.h5')
 
 # model = load_model(WORKING_DIR+'/best_model_vgg16.h5')
@@ -297,7 +298,7 @@ def predict_caption(model, image, tokenizer, max_length): # 여기서 image 자�
 #     actual.append(actual_captions)
 #     predicted.append(y_pred)
     
-# # calcuate BLEU score
+# # # calcuate BLEU score
 # print("BLEU-1: %f" % corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))        # 1-gram 만 뽑음
 # print("BLEU-2: %f" % corpus_bleu(actual, predicted, weights=(0.5, 0.5, 0, 0)))      # 1-gram 과 2-gram 만 뽑되 각각 같은 가중치를 두고 뽑음
 
@@ -322,7 +323,7 @@ def predict_caption(model, image, tokenizer, max_length): # 여기서 image 자�
 #     plt.show()
 
 
-image = load_img('D:/OneDrive - 한국방송통신대학교/data/custom_sample/KakaoTalk_20221004_195441790.jpg', target_size=(224, 224))
+image = load_img('D:/OneDrive - 한국방송통신대학교/data/custom_sample/img.jpg', target_size=(224, 224))
 # convert image pixels to numpy array
 image = img_to_array(image)
 # reshape data for model
@@ -336,8 +337,8 @@ predic_features = model.predict(image, verbose=1)
 print('prediction..')
 model = load_model(WORKING_DIR+'/best_model_vgg16.h5')
 y_pred = predict_caption(model, predic_features, tokenizer, max_length)
-y_pred = y_pred.replace('start', '')
-y_pred = y_pred.replace('end', '')
+y_pred = y_pred.replace('startseq', '')
+y_pred = y_pred.replace('endseq', '')
 print(y_pred)
 
 # generate_caption("1001773457_577c3a7d70.jpg")
