@@ -1,5 +1,6 @@
 import os
 import pickle
+from matplotlib.cbook import flatten
 import numpy as np
 from tqdm.notebook import tqdm
 
@@ -9,7 +10,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Model, load_model
 from keras.utils.np_utils import to_categorical
-from keras.layers import Input, Dense, LSTM, Embedding, Dropout, add
+from keras.layers import Input, Dense, LSTM, Embedding, Dropout, add, Conv1D, Flatten
 
 BASE_DIR = 'D:/OneDrive - 한국방송통신대학교/data/flickr30k'
 WORKING_DIR = 'D:/OneDrive - 한국방송통신대학교/data/flickr30k/working'
@@ -211,43 +212,161 @@ def data_generator(data_keys, mapping, features, tokenizer, max_length, vocab_si
 # image feature layers
 inputs1 = Input(shape=(4096,))
 fe1 = Dropout(0.4)(inputs1)
-fe2 = Dense(256, activation='relu')(fe1)
+fe2 = Dense(1024, activation='relu')(fe1)
+fe2 = Dense(512, activation='relu')(fe2)
+fe2 = Dense(256, activation='relu')(fe2)
+fe3 = Dense(128, activation='relu')(fe2)
+# fe2 = Dense(, activation='relu')(fe2)
 # sequence feature layers
 inputs2 = Input(shape=(max_length,))
 se1 = Embedding(vocab_size, 256, mask_zero=True)(inputs2)
 se2 = Dense(256, activation='relu')(se1)
-se3 = Dropout(0.4)(se1)
+se3 = Dropout(0.4)(se2)
+se4 = Dense(128, activation='relu')(se3)
 
 # decoder model
-decoder1 = add([fe2, se3])
-decoder2 = LSTM(128)(decoder1)
-decoder3 = Dense(256, activation='relu')(decoder2)
+decoder1 = add([fe3, se4])
+# decoder2 = LSTM(512)(decoder1)
+# decoder2 = LSTM(256)(decoder1)
+# decoder2 = LSTM(128)(decoder1)
+# decoder2 = LSTM(64)(decoder1)
+# decoder2 = LSTM(32)(decoder1)
+# decoder2 = LSTM(16)(decoder1)
+decoder2 = Conv1D(1024,3)(decoder1)
+decoder2 = Conv1D(512,3)(decoder2)
+decoder2 = Conv1D(256,3)(decoder2)
+decoder2 = Conv1D(128,3)(decoder2)
+decoder2 = Flatten()(decoder2)
+decoder3 = Dense(64, activation='relu')(decoder2)
+decoder3 = Dense(32, activation='relu')(decoder2)
+# decoder4 = Dense(128, activation='relu')(decoder3)
+# decoder5 = Dense(64, activation='relu')(decoder4)
+# decoder5 = Dense(32, activation='relu')(decoder4)
+# decoder5 = Dense(16, activation='relu')(decoder4)
 outputs = Dense(vocab_size, activation='softmax')(decoder3)
 
 model = Model(inputs=[inputs1, inputs2], outputs=outputs)
-# model.compile(loss='categorical_crossentropy', optimizer='adam')
+model.summary()
+model.compile(loss='categorical_crossentropy', optimizer='adam')
+# __________________________________________________________________________________________________
+#  Layer (type)                   Output Shape         Param #     Connected to
+# ==================================================================================================
+#  input_1 (InputLayer)           [(None, 4096)]       0           []
+
+#  input_2 (InputLayer)           [(None, 74)]         0           []
+
+#  dropout (Dropout)              (None, 4096)         0           ['input_1[0][0]']
+
+#  embedding (Embedding)          (None, 74, 256)      4692992     ['input_2[0][0]']
 
 
+#  dropout_1 (Dropout)            (None, 74, 256)      0           ['embedding[0][0]']
+
+#  add (Add)                      (None, 74, 256)      0           ['dense[0][0]',
+#                                                                   'dropout_1[0][0]']
+
+#  lstm (LSTM)                    (None, 128)          197120      ['add[0][0]']
+
+#  dense_2 (Dense)                (None, 256)          33024       ['lstm[0][0]']
+
+#  dense_3 (Dense)                (None, 18332)        4711324     ['dense_2[0][0]']
+
+# ==================================================================================================
+# Total params: 10,683,292
+# Trainable params: 10,683,292
+# Non-trainable params: 0
+# __________________________________________________________________________________________________
+#  Layer (type)                   Output Shape         Param #     Connected to
+# ==================================================================================================
+#  input_1 (InputLayer)           [(None, 4096)]       0           []
+
+#  input_2 (InputLayer)           [(None, 74)]         0           []
+
+#  dropout (Dropout)              (None, 4096)         0           ['input_1[0][0]']
+
+#  embedding (Embedding)          (None, 74, 256)      4692992     ['input_2[0][0]']
+
+#  dense (Dense)                  (None, 256)          1048832     ['dropout[0][0]']
+
+#  dropout_1 (Dropout)            (None, 74, 256)      0           ['embedding[0][0]']
+
+#  add (Add)                      (None, 74, 256)      0           ['dense[0][0]',
+#                                                                   'dropout_1[0][0]']
+
+#  conv1d (Conv1D)                (None, 72, 256)      196864      ['add[0][0]']
+
+#  flatten (Flatten)              (None, 18432)        0           ['conv1d[0][0]']
+
+#  dense_2 (Dense)                (None, 256)          4718848     ['flatten[0][0]']
+
+#  dense_3 (Dense)                (None, 18332)        4711324     ['dense_2[0][0]']
+
+# ==================================================================================================
+# Total params: 15,368,860
+# Trainable params: 15,368,860
+# Non-trainable params: 0
+# _________________________________________________________________________________________________
+#  Layer (type)                   Output Shape         Param #     Connected to
+# ==================================================================================================
+#  input_1 (InputLayer)           [(None, 4096)]       0           []
+
+#  dropout (Dropout)              (None, 4096)         0           ['input_1[0][0]']
+
+#  input_2 (InputLayer)           [(None, 74)]         0           []
+
+#  dense (Dense)                  (None, 1024)         4195328     ['dropout[0][0]']
+
+#  embedding (Embedding)          (None, 74, 256)      4692992     ['input_2[0][0]']
+
+#  dense_1 (Dense)                (None, 512)          524800      ['dense[0][0]']
+
+#  dense_4 (Dense)                (None, 74, 256)      65792       ['embedding[0][0]']
+
+#  dense_2 (Dense)                (None, 256)          131328      ['dense_1[0][0]']
+
+#  dropout_1 (Dropout)            (None, 74, 256)      0           ['dense_4[0][0]']
+
+#  dense_3 (Dense)                (None, 128)          32896       ['dense_2[0][0]']
+
+#  dense_5 (Dense)                (None, 74, 128)      32896       ['dropout_1[0][0]']
+
+#  add (Add)                      (None, 74, 128)      0           ['dense_3[0][0]',
+#                                                                   'dense_5[0][0]']
+
+#  conv1d_3 (Conv1D)              (None, 72, 32)       12320       ['add[0][0]']
+
+#  flatten (Flatten)              (None, 2304)         0           ['conv1d_3[0][0]']
+
+#  dense_6 (Dense)                (None, 256)          590080      ['flatten[0][0]']
+
+#  dense_7 (Dense)                (None, 18332)        4711324     ['dense_6[0][0]']
+
+# ==================================================================================================
+# Total params: 14,989,756
+# Trainable params: 14,989,756
+# Non-trainable params: 0
 # train the model
 print('start training...')
-epochs = 40
+epochs = 10
 batch_size = 32
 steps = len(train) // batch_size # 1 batch 당 훈련하는 데이터 수
 # len(train): 8091 / steps: 252
 # 제너레이터 함수에서 yield로 252개의 [X1, X2], y 묶음이 차곡차곡 쌓여 있고  steps_per_epoch=steps 이 옵션으로
 # epoch 1번짜리 fit을 돌때 252번(정해준steps번) generator 를 호출함. iterating 을 steps번 함
-""" for i in range(epochs):
+import time 
+begin = time.time()
+for i in range(epochs):
     print(f'epoch: {i+1}')
     # create data generator
     generator = data_generator(train, mapping, features, tokenizer, max_length, vocab_size, batch_size)
     # fit for one epoch
     model.fit(generator, epochs=1, steps_per_epoch=steps, verbose=1) # generator -> [X1, X2], y
-print('done training.') """
-
+print('done training.')
+end = time.time()
 # save the model
-# model.save(WORKING_DIR+'/best_model_vgg16.h5')
+model.save(WORKING_DIR+'/conv1_4layer_10epo.h5')
 
-# model = load_model(WORKING_DIR+'/best_model_vgg16.h5')
+# model = load_model(WORKING_DIR+'/conv1_1layer_256,3.h5')
 def idx_to_word(integer, tokenizer):
     for word, index in tokenizer.word_index.items():
         if index == integer:
@@ -283,24 +402,24 @@ def predict_caption(model, image, tokenizer, max_length): # 여기서 image 자�
     return in_text
 
 #  bleu score
-# from nltk.translate.bleu_score import corpus_bleu
-# # validate with test data
-# actual, predicted = list(), list()
-# for key in tqdm(test):
-#     # get actual caption
-#     captions = mapping[key]
-#     # predict the caption for image
-#     y_pred = predict_caption(model, features[key], tokenizer, max_length) 
-#     # split into words
-#     actual_captions = [caption.split() for caption in captions]
-#     y_pred = y_pred.split()
-#     # append to the list
-#     actual.append(actual_captions)
-#     predicted.append(y_pred)
+from nltk.translate.bleu_score import corpus_bleu
+# validate with test data
+actual, predicted = list(), list()
+for key in tqdm(test):
+    # get actual caption
+    captions = mapping[key]
+    # predict the caption for image
+    y_pred = predict_caption(model, features[key], tokenizer, max_length) 
+    # split into words
+    actual_captions = [caption.split() for caption in captions]
+    y_pred = y_pred.split()
+    # append to the list
+    actual.append(actual_captions)
+    predicted.append(y_pred)
     
-# # # calcuate BLEU score
-# print("BLEU-1: %f" % corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))        # 1-gram 만 뽑음
-# print("BLEU-2: %f" % corpus_bleu(actual, predicted, weights=(0.5, 0.5, 0, 0)))      # 1-gram 과 2-gram 만 뽑되 각각 같은 가중치를 두고 뽑음
+# # calcuate BLEU score
+print("BLEU-1: %f" % corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))        # 1-gram 만 뽑음
+print("BLEU-2: %f" % corpus_bleu(actual, predicted, weights=(0.5, 0.5, 0, 0)))      # 1-gram 과 2-gram 만 뽑되 각각 같은 가중치를 두고 뽑음
 
 
 # from PIL import Image
@@ -335,11 +454,12 @@ model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
 predic_features = model.predict(image, verbose=1)
 
 print('prediction..')
-model = load_model(WORKING_DIR+'/best_model_vgg16.h5')
+model = load_model(WORKING_DIR+'/conv1_4layer_10epo.h5')
 y_pred = predict_caption(model, predic_features, tokenizer, max_length)
 y_pred = y_pred.replace('startseq', '')
 y_pred = y_pred.replace('endseq', '')
 print(y_pred)
+print(end-begin)
 
 # generate_caption("1001773457_577c3a7d70.jpg")
 # generate_caption("1002674143_1b742ab4b8.jpg")
