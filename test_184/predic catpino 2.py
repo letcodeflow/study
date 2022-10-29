@@ -229,21 +229,25 @@ decoder1 = add([fe3, se4])
 # decoder2 = LSTM(512)(decoder1)
 # decoder2 = LSTM(256)(decoder1)
 # decoder2 = LSTM(128)(decoder1)
-# decoder2 = LSTM(64)(decoder1)
+decoder2 = LSTM(64)(decoder1)
 # decoder2 = LSTM(32)(decoder1)
 # decoder2 = LSTM(16)(decoder1)
-decoder2 = Conv1D(1024,3)(decoder1)
-decoder2 = Conv1D(512,3)(decoder2)
-decoder2 = Conv1D(256,3)(decoder2)
-decoder2 = Conv1D(128,3)(decoder2)
-decoder2 = Flatten()(decoder2)
-decoder3 = Dense(64, activation='relu')(decoder2)
-decoder3 = Dense(32, activation='relu')(decoder2)
+# decoder2 = Conv1D(128,3, padding='same')(decoder1)
+# decoder2 = add([decoder2,decoder1 ])
+# # decoder2 = Conv1D(512,3)(decoder2)
+# # decoder2 = Conv1D(256,3)(decoder2)
+# # decoder2 = Conv1D(128,3)(decoder2)
+# decoder2 = Flatten()(decoder2)
+# decoder3 = Dense(32, activation='relu')(decoder2)
+# decoder3 = Dense(256, activation='relu')(decoder3)
+# decoder3 = Dense(128, activation='relu')(decoder3)
+# decoder3 = Dense(64, activation='relu')(decoder3)
+# decoder3 = Dense(32, activation='relu')(decoder3)
 # decoder4 = Dense(128, activation='relu')(decoder3)
 # decoder5 = Dense(64, activation='relu')(decoder4)
 # decoder5 = Dense(32, activation='relu')(decoder4)
 # decoder5 = Dense(16, activation='relu')(decoder4)
-outputs = Dense(vocab_size, activation='softmax')(decoder3)
+outputs = Dense(vocab_size, activation='softmax')(decoder2)
 
 model = Model(inputs=[inputs1, inputs2], outputs=outputs)
 model.summary()
@@ -347,7 +351,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam')
 # Non-trainable params: 0
 # train the model
 print('start training...')
-epochs = 10
+epochs = 40
 batch_size = 32
 steps = len(train) // batch_size # 1 batch 당 훈련하는 데이터 수
 # len(train): 8091 / steps: 252
@@ -364,7 +368,7 @@ for i in range(epochs):
 print('done training.')
 end = time.time()
 # save the model
-model.save(WORKING_DIR+'/conv1_4layer_10epo.h5')
+model.save(WORKING_DIR+'/lstm_1layer_40epo.h5')
 
 # model = load_model(WORKING_DIR+'/conv1_1layer_256,3.h5')
 def idx_to_word(integer, tokenizer):
@@ -442,7 +446,7 @@ print("BLEU-2: %f" % corpus_bleu(actual, predicted, weights=(0.5, 0.5, 0, 0)))  
 #     plt.show()
 
 
-image = load_img('D:/OneDrive - 한국방송통신대학교/data/custom_sample/img.jpg', target_size=(224, 224))
+image = load_img('D:/OneDrive - 한국방송통신대학교/data/custom_sample/KakaoTalk_20221004_195441790.jpg', target_size=(224, 224))
 # convert image pixels to numpy array
 image = img_to_array(image)
 # reshape data for model
@@ -454,12 +458,12 @@ model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
 predic_features = model.predict(image, verbose=1)
 
 print('prediction..')
-model = load_model(WORKING_DIR+'/conv1_4layer_10epo.h5')
+model = load_model(WORKING_DIR+'/lstm_1layer_40epo.h5')
 y_pred = predict_caption(model, predic_features, tokenizer, max_length)
 y_pred = y_pred.replace('startseq', '')
 y_pred = y_pred.replace('endseq', '')
 print(y_pred)
-print(end-begin)
+# print(end-begin)
 
 # generate_caption("1001773457_577c3a7d70.jpg")
 # generate_caption("1002674143_1b742ab4b8.jpg")
