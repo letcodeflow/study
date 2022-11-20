@@ -65,5 +65,6 @@ print('acc',accuracy, 'loss',loss)
 
 y_pred = model.predict(x_test)
 from sklearn.metrics import accuracy_score
-acc = accuracy_score(y_test, y_pred)
+import numpy as np
+acc = accuracy_score(y_test, np.argmax(y_pred))
 print('accc',acc)
