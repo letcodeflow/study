@@ -16,13 +16,13 @@ spacy_en = en_core_web_sm.load() # 영어 toknizer
 spacy_de = spacy.load('de_core_news_sm') # 독일어 toknizer
 
 
-'''
+
 # 간단히 토큰화(tokenization) 기능 써보기
 tokenized = spacy_en.tokenizer("I am a graduate student.")
 
 for i, token in enumerate(tokenized):
     print(f"인덱스 {i}: {token.text}")
-'''
+
 
 # 독일어(Deutsch) 문장을 토큰화 하는 함수 (순서를 뒤집지 않음)
 # def tokenize_de(text):
@@ -52,11 +52,11 @@ print(f"학습 데이터셋(training dataset) 크기: {len(train_dataset.example
 print(f"평가 데이터셋(validation dataset) 크기: {len(valid_dataset.examples)}개")
 print(f"테스트 데이터셋(testing dataset) 크기: {len(test_dataset.examples)}개")
 
-'''
+
 # 학습 데이터 중 하나를 선택해 출력
 print(vars(train_dataset.examples[30])['src'])
 print(vars(train_dataset.examples[30])['trg'])
-'''
+
 # 최소 두번 이상 등장한 단어에 대해서만 vcab 에 추가함
 SRC.build_vocab(train_dataset, min_freq=2)
 TRG.build_vocab(train_dataset, min_freq=2)
@@ -64,7 +64,7 @@ TRG.build_vocab(train_dataset, min_freq=2)
 print(f"len(SRC): {len(SRC.vocab)}")
 print(f"len(TRG): {len(TRG.vocab)}")
 
-'''
+
 # 무슨 숫자로 임베딩되는지 볼 수 있음
 print(TRG.vocab.stoi["abcabc"]) # 없는 단어: 0
 print(TRG.vocab.stoi[TRG.pad_token]) # 패딩(padding): 1
@@ -72,7 +72,7 @@ print(TRG.vocab.stoi["<sos>"]) # <sos>: 2
 print(TRG.vocab.stoi["<eos>"]) # <eos>: 3
 print(TRG.vocab.stoi["hello"])
 print(TRG.vocab.stoi["world"])
-'''
+
 
 BATCH_SIZE = 128
 
@@ -657,7 +657,7 @@ def epoch_time(start_time, end_time):
     return elapsed_mins, elapsed_secs
 
 
-N_EPOCHS = 50
+N_EPOCHS = 1
 CLIP = 1
 best_valid_loss = float('inf')
 
