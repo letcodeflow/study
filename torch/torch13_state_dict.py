@@ -30,7 +30,7 @@ from torch.utils.data import TensorDataset,DataLoader
 train = TensorDataset(x_train,y_train)
 test = TensorDataset(x_test,y_test)
 
-# print(train[0][0])
+# print(train[0][0]).
 
 train_loader = DataLoader(train,batch_size=40,shuffle=True)
 test_loader = DataLoader(test,batch_size=40,shuffle=True)
