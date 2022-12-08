@@ -59,7 +59,7 @@ class Model(nn.Module):
 
 model = Model(30,1).to(DEVICE)
 path = './save'
-
+print(model)
 loaded_model = Model(30,1).to(DEVICE)
 loaded_model.load_state_dict(torch.load(path +'torch13_state_dict.pt'))
 
