@@ -10,7 +10,7 @@ import torchvision.transforms as tr
 transf = tr.Compose([tr.Resize(15), tr.ToTensor()]) #구성, 
 path = './_data/torch_data/MNIST/'
 
-# train = MNIST(path, train=True, download=False, transform=transf)
+# train = MNIST(path, train=True, download=False, transform=transf).
 # test = MNIST(path, train=False, download=False, transform=transf)
 train = MNIST(path, train=True, download=False, )
 test = MNIST(path, train=False, download=False, )
