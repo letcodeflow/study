@@ -28,7 +28,7 @@ x_train, x_test = x_train.view(-1,x_train.size()[1]*x_train.size()[2]),x_test.vi
 print(x_train.size())
 
 # train_set = TensorDataset(x_train,y_train)
-# test_set = TensorDataset(x_test,y_test)
+# test_set = TensorDataset(x_test,y_test).
 
 train_loader = DataLoader(train, batch_size=60, shuffle=True)
 teste_loader = DataLoader(test, batch_size=600, shuffle=False)
