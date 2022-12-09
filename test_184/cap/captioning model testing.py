@@ -13,7 +13,7 @@ from keras.layers import Input, Dense, LSTM, Embedding, Dropout, add, Conv1D
 inputs1 = Input(shape=(4096,))
 fe1 = Dropout(0.4)(inputs1)
 fe2 = Dense(256, activation='relu')(fe1)
-# sequence feature layers
+# sequence feature layers.
 inputs2 = Input(shape=(118,))
 se1 = Embedding(400, 256, mask_zero=True)(inputs2)
 se2 = Dense(256, activation='relu')(se1)
