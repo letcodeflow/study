@@ -1,2 +1,2 @@
-a= 'foo'
+a= 'foo'.
 print(iter(a))
