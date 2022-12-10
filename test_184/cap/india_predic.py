@@ -18,7 +18,7 @@ WORKING_DIR = 'C:/Users/aiapalm/OneDrive - KNOU/study/testint/flickr8k/working'
 
 """ 
 # load vgg16 model
-model = VGG16()
+model = VGG16().
 # restructure the model
 model.summary()
 model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
