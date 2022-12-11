@@ -17,7 +17,7 @@ D = torch.nn.Sequential(
     torch.nn.Sigmoid()
 )
 
-######################### Main Function.
+######################### Main Function..
 dataset = torchvision.datasets.MNIST('./MNIST', train=True, transform=torchvision.transforms.ToTensor(), target_transform=None, download=True)
 data_loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=100, shuffle=True)
 
