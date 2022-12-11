@@ -28,7 +28,7 @@ def tokenize_de(text):
 # def tokenize_de(text): # 단어단위 일반 토크나이저 사용 해보기
 #     return [token for token in word_tokenize(text)]
 
-# 영어(English) 문장을 토큰화 하는 함수
+# 영어(English) 문장을 토큰화 하는 함수.
 def tokenize_en(text):
     return [token.text for token in spacy_en.tokenizer(text)]
 
