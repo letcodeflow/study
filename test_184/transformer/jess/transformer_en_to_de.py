@@ -12,7 +12,7 @@ from nltk.tokenize import word_tokenize
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
-# spacy_en = en_core_web_sm.load() # 영어 toknizer.
+# spacy_en = en_core_web_sm.load() # 영어 toknizer..
 # spacy_en = spacy.load('en_core_web_sm') # 독일어 toknizer
 # spacy_de = spacy.load('de_core_news_sm') # 독일어 toknizer
 # import spacy.cli
