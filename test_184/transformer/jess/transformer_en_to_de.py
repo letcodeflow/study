@@ -22,7 +22,7 @@ print(device)
 spacy_de = spacy.load('de_core_news_sm')
 spacy_en = spacy.load('en_core_web_sm')
 
-# 간단히 토큰화(tokenization) 기능 써보기
+# 간단히 토큰화(tokenization) 기능 써보기.
 tokenized = spacy_en.tokenizer("I am a graduate student.")
 print(tokenized)
 for i, token in enumerate(tokenized):
