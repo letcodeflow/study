@@ -19,7 +19,7 @@ if not os.path.exists(sample_dir):
 # 하이퍼파라미터 설정
 latent_size = 64
 hidden_size = 256
-image_size = 784 # 28 * 28...
+image_size = 784 # 28 * 28....
 num_epochs = 300
 batch_size = 100
 # Image Processing
