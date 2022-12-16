@@ -163,7 +163,7 @@ class MultiHeadAttentionLayer(nn.Module):
         1 1 1 1 0
         1 1 1 1 1
         """
-        # 이 모양으로 되어있음
+        # 이 모양으로 되어있음.
         
         # 어텐션(attention) 스코어 계산: 각 단어에 대한 확률 값
         attention = torch.softmax(energy, dim=-1)
