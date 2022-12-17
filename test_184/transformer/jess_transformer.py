@@ -155,7 +155,7 @@ class MultiHeadAttentionLayer(nn.Module):
         if mask is not None:
             energy = energy.masked_fill(mask==0, -1e10)
         # 마스크(mask) 값이 0인 부분을 -1e10으로 채우기 - softmax 이후 0%가 되도록
-        # 마스크 벡터는 trg_pad_mask 에 저장시켜 사용하는데
+        # 마스크 벡터는 trg_pad_mask 에 저장시켜 사용하는데.
         """ (마스크 예시)
         1 0 0 0 0
         1 1 0 0 0
