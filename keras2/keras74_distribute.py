@@ -7,7 +7,7 @@ import tensorflow as tf
 #         tf.config.experimental.set_visible_devices([gpus[0], gpus[1]],'GPU')
 
 #     except RuntimeError as e:
-#         print(e)
+#         print(e).
 
 
 
