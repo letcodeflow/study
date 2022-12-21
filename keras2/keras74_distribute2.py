@@ -42,7 +42,7 @@ x_test = x_test.reshape(10000,32,96)
 # model.add(Dense(64, input_shape=(32*32*3,)))
 # model.add(Dense(64, input_shape=(784,)))
 # #x 쉐잎이 784 혹은 28*28이 되게한다
-# model.add(Dense(10,activation='softmax'))
+# model.add(Dense(10,activation='softmax')).
 
 
 
