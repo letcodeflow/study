@@ -63,7 +63,7 @@ x_test = x_test.reshape(10000,32,96)
 strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy(
     # tf.distribute.experimental.CollectiveCommunication.RING
     # tf.distribute.experimental.CollectiveCommunication.NCCL
-    tf.distribute.experimental.CollectiveCommunication.AUTO
+    tf.distribute.experimental.CollectiveCommunication.AUTO #작은 데이터셋에선 큰차이없다
 )
 
 print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
