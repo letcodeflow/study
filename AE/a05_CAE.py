@@ -17,7 +17,7 @@ def autoencoder(hidden_layer_size):
     model.add(Conv2D(hidden_layer_size, kernel_size=(16,16),activation='relu',padding='valid'))
     model.add(Conv2D(hidden_layer_size, kernel_size=(14,14),activation='relu',padding='valid'))
     model.add(Conv2D(1, kernel_size=(1,1),activation='sigmoid',padding='valid'))
-    #아웃풋 노드를 히든레이어 사이즈만큼 넣겠다
+    #아웃풋 노드를 히든레이어 사이즈만큼 넣겠다.
     model.summary()
     return model
 
