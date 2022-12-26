@@ -1,5 +1,6 @@
 # cnn 구성
-# upsampling 추가 - 리얼리스트, 쌍샘플링 2가지
+# upsampling 추가 - 리얼리스트, 쌍샘플링 2가지.
+  
 
 import numpy as np
 from keras.datasets import mnist
@@ -11,7 +12,7 @@ x_train_noised = x_train + np.random.normal(0,0.1,size=x_train.shape)
 x_test_noised = x_test + np.random.normal(0,0.1,size=x_test.shape)
 # 그림 진하게 만들기 
 #결과값 0~1 -> 0~1.1
-#1.1 컷
+#1.1 컷.
 x_train_noised = np.clip(x_train_noised,a_min=0,a_max=1)
 x_test_noised = np.clip(x_test_noised,a_min=0,a_max=1)
 from keras.models import Sequential, Model
@@ -59,6 +60,11 @@ for i, ax in enumerate([ax6,ax7,ax8,ax9,ax10]):
         ax.set_ylabel('output',size=20)
     ax.grid(False)
     ax.set_xticks([])
+    ax.set_yticks([])
+
+plt.tight_layout()
+plt.show()
+])
     ax.set_yticks([])
 
 plt.tight_layout()
