@@ -11,7 +11,7 @@ from keras.layers import Dense,Input
 
 input_img = Input(shape=(784,))
 encoded = Dense(64,activation='relu')(input_img)
-#자잘한 특성제거, 활성화 함수는 아무거나 써도 된다
+#자잘한 특성제거, 활성화 함수는 아무거나 써도 된다.
 #노드수나 층수는 결과값을 보면서 판단해야 한다 활성화함수도
 #마지막 활성화 함수 바꿀때 로스함수도 고려한다
 decoded = Dense(784, activation='sigmoid')(encoded)
@@ -42,4 +42,4 @@ for i in range(n):
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
-plt.show()
+plt.show()
