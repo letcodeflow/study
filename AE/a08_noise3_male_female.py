@@ -26,7 +26,7 @@ np.save('D:\study_data\_save\_npy\me.npy',arr = me[0][0])
 # np.save('D:\study_data\_save\_npy\keras47_mwtrain_x', arr = train[0][0])
 # np.save('D:\study_data\_save\_npy\keras47_mwtrain_y',arr = train[0][1])
 # np.save('D:\study_data\_save\_npy\keras47_mwtest_x',arr = train[0][0])
-# np.save('D:\study_data\_save\_npy\keras47_mwtest_y.npy',arr = train[0][1]).
+# np.save('D:\study_data\_save\_npy\keras47_mwtest_y.npy',arr = train[0][1])..
 
 me = np.load('D:\study_data\_save\_npy\me.npy')
 x_train = np.load('D:\study_data\_save\_npy\keras47_mwtrain_x.npy')
