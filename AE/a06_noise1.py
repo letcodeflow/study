@@ -9,7 +9,7 @@ x_train_noised = x_train + np.random.normal(0,0.1,size=x_train.shape)
 x_test_noised = x_test + np.random.normal(0,0.1,size=x_test.shape)
 # 그림 진하게 만들기 
 #결과값 0~1 -> 0~1.1
-#1.1 컷..
+#1.1 컷...
 x_train_noised = np.clip(x_train_noised,a_min=0,a_max=1)
 x_test_noised = np.clip(x_test_noised,a_min=0,a_max=1)
 
