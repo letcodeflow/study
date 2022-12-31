@@ -12,7 +12,7 @@ x_train = x_train.reshape(-1,28*28).astype('float32')/255.
 x_test = x_test.reshape(-1,28*28).astype('float32')/255.
 
 from keras.utils import to_categorical
-# y_train = to_categorical(y_train)....
+# y_train = to_categorical(y_train).....
 # y_test = to_categorical(y_test)
 
 #2.model
