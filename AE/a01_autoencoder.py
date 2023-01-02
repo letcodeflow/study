@@ -4,7 +4,7 @@ from keras.datasets import mnist
 
 x_train = x_train.reshape(60000, 784).astype('float32')/255.
 x_test = x_test.reshape(10000, 784).astype('float32')/255.
-#타입변환형 혹시나해서 추가하는 것이므로 어떻게 쓰든 상관은 없다 - 스케일링.....
+#타입변환형 혹시나해서 추가하는 것이므로 어떻게 쓰든 상관은 없다 - 스케일링......
 
 from keras.models import Sequential, Model
 from keras.layers import Dense,Input
