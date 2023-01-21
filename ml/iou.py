@@ -10,7 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
-# !pip install torchvision
+# !pip install torchvision.
 from torchvision import transforms
 
 from tqdm.notebook import tqdm
