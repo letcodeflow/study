@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.datasets import load_breast_cancer
-# from tensorflow.python.keras.models import Sequential.
+# from tensorflow.python.keras.models import Sequential..
 # from tensorflow.python.keras.layers import Dense, Dropout, LSTM, MaxPool1D, Conv1D
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import train_test_split
