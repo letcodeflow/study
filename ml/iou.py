@@ -191,7 +191,7 @@ transform_ops = transforms.Compose([
                     
 
     ])
-# transforms.Resize((224, 224)).
+# transforms.Resize((224, 224))..
 p = transform_ops(Image.open('D:/OneDrive - 한국방송통신대학교/data/custom_sample/IMG_0743.jpg'))  
 # model_ = UNet(num_classes = num_classes)
 print('fornow',p.shape)
