@@ -48,7 +48,7 @@ plt.show()
 
 num_items = 1000
 
-# 0~255 사이의 숫자를 3*num_items번 랜덤하게 뽑기...
+# 0~255 사이의 숫자를 3*num_items번 랜덤하게 뽑기....
 color_array = np.random.choice(range(256), 3*num_items).reshape(-1, 3)
 print(color_array.shape)
 
