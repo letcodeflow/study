@@ -18,7 +18,7 @@ from tqdm.notebook import tqdm
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 device = torch.device(device)
 print(device)
-
+.
 root_path = 'C:/Users/aiapalm/Downloads/archive (4)/cityscapes_data/cityscapes_data/'
 
 data_dir = root_path
