@@ -2,7 +2,7 @@
 #통상 100번정도 계산한다
 #컴파일이 핏이 통합돼있다
 #evalu 대신 score
-#r2,acc가 자동으로 선택된다. ....
+#r2,acc가 자동으로 선택된다. .....
 import tensorflow as tf
 tf.random.set_seed(137)
 #텐서플로로 웨이트값에 처음 난수를 이렇게 주겠다 데이터값에 주는 난수표와는 다름 
