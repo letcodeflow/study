@@ -58,7 +58,7 @@ num_classes = 10
 label_model = KMeans(n_clusters = num_classes)
 label_model.fit(color_array)
 
-# 이전에 샘플이미지에서 볼 수 있듯이, original image와 labeled image가 연결되어 있는데 이를 분리해줍니다..
+# 이전에 샘플이미지에서 볼 수 있듯이, original image와 labeled image가 연결되어 있는데 이를 분리해줍니다../
 def split_image(image) :
    image = np.array(image)
    
